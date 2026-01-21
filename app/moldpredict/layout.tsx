@@ -1,5 +1,3 @@
-// /app/moldpredict/layout.tsx
-import "../globals.css";
 import Sidebar from "./components/Sidebar";
 
 export default function MoldPredictLayout({
@@ -8,13 +6,9 @@ export default function MoldPredictLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-blue-50 text-gray-900 min-h-screen">
-        <Sidebar />
-        <main className="md:ml-64 pt-16 md:pt-0">
-          {children}
-        </main>
-      </body>
-    </html>
+    <div className="min-h-screen bg-blue-50 text-gray-900">
+      <Sidebar />
+      <main className="md:ml-64 pt-16 md:pt-0">{children}</main>
+    </div>
   );
 }
