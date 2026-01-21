@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface HeroProps {
   onSeeHow: () => void; // define the prop for the "See How It Works" button
 }
@@ -31,6 +33,13 @@ export default function Hero({ onSeeHow }: HeroProps) {
         >
           See How It Works
         </button>
+
+        <Link
+          href="/moldpredict/demo"
+          className="px-8 py-4 border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-blue-100 transform hover:scale-105 transition duration-300"
+        >
+          Try It Out
+        </Link>
       </div>
     </section>
   );
