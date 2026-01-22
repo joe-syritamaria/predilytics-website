@@ -1,11 +1,9 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type FormState = {
   moldId: string;
-  modelSelection: string;
-  yearSelection: string;
   complexity: string;
   size: string;
   sideActions: string;
@@ -25,8 +23,6 @@ type PredictionResult = {
   data: unknown;
 };
 
-const DOWNLOAD_URL =
-  "https://github.com/your-org/your-repo/releases/latest";
 
 const PLASTIC_OPTIONS = [
   "ABS",
@@ -49,6 +45,13 @@ const toNumber = (value: string, fallback = 0) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 };
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Math.round(value));
 
 const buildPredictBody = (formState: FormState) => {
   const moldId = formState.moldId.trim();
@@ -88,36 +91,68 @@ const getPredictionField = (data: unknown) => {
   return null;
 };
 
-const pickFirstNumber = (source: unknown, keys: string[]) => {
+const findValueByKeys = (
+  source: unknown,
+  keys: string[]
+): unknown => {
   if (!source || typeof source !== "object") {
     return null;
   }
+  if (Array.isArray(source)) {
+    for (const item of source) {
+      const found = findValueByKeys(item, keys);
+      if (found !== null && found !== undefined) {
+        return found;
+      }
+    }
+    return null;
+  }
+
   const record = source as Record<string, unknown>;
   for (const key of keys) {
-    const value = record[key];
-    if (typeof value === "number") {
-      return value;
-    }
-    if (typeof value === "string" && value.trim() !== "") {
-      const parsed = Number(value);
-      if (Number.isFinite(parsed)) {
-        return parsed;
+    if (key in record) {
+      const value = record[key];
+      if (
+        typeof value === "string" ||
+        typeof value === "number"
+      ) {
+        return value;
       }
+      const nested = findValueByKeys(value, keys);
+      if (nested !== null && nested !== undefined) {
+        return nested;
+      }
+    }
+  }
+
+  for (const value of Object.values(record)) {
+    const found = findValueByKeys(value, keys);
+    if (found !== null && found !== undefined) {
+      return found;
+    }
+  }
+
+  return null;
+};
+
+const pickFirstNumber = (source: unknown, keys: string[]) => {
+  const value = findValueByKeys(source, keys);
+  if (typeof value === "number") {
+    return value;
+  }
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
     }
   }
   return null;
 };
 
 const pickFirstString = (source: unknown, keys: string[]) => {
-  if (!source || typeof source !== "object") {
-    return null;
-  }
-  const record = source as Record<string, unknown>;
-  for (const key of keys) {
-    const value = record[key];
-    if (typeof value === "string" && value.trim() !== "") {
-      return value;
-    }
+  const value = findValueByKeys(source, keys);
+  if (typeof value === "string" && value.trim() !== "") {
+    return value;
   }
   return null;
 };
@@ -140,20 +175,8 @@ const getRiskTone = (riskText: string | null) => {
 };
 
 export default function DemoPage() {
-  const currentYear = new Date().getFullYear();
-  const yearOptions = useMemo(
-    () => [
-      { label: `Past (${currentYear - 1})`, value: `${currentYear - 1}` },
-      { label: `Present (${currentYear})`, value: `${currentYear}` },
-      { label: `Future (${currentYear + 1})`, value: `${currentYear + 1}` },
-    ],
-    [currentYear]
-  );
-
   const [formState, setFormState] = useState<FormState>({
     moldId: "",
-    modelSelection: "xgb",
-    yearSelection: `${currentYear}`,
     complexity: "simple",
     size: "small",
     sideActions: "none",
@@ -174,19 +197,25 @@ export default function DemoPage() {
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [hasRunOnce, setHasRunOnce] = useState(false);
   const [healthStatus, setHealthStatus] = useState<string | null>(null);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [reportEmail, setReportEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [isEmailSending, setIsEmailSending] = useState(false);
 
   useEffect(() => {
     fetch("/api/health")
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));
         if (response.ok) {
-          setHealthStatus("Demo server is warm.");
+          setHealthStatus("Server is warm.");
           return;
         }
-        setHealthStatus(payload?.error ?? "Demo server unavailable.");
+        setHealthStatus(payload?.error ?? "Server unavailable.");
       })
       .catch(() => {
-        setHealthStatus("Demo server unavailable.");
+        setHealthStatus("Server unavailable.");
       });
   }, []);
 
@@ -196,12 +225,18 @@ export default function DemoPage() {
     "predicted_days",
     "predicted_runtime_days",
     "predicted_run_days",
+    "runtime_days",
+    "days_to_failure",
+    "time_to_failure_days",
+    "estimated_time_to_repair_days",
   ]);
   const predictedCost = pickFirstNumber(predictionValue ?? result?.data, [
     "cost",
     "predicted_cost",
     "estimated_cost",
     "repair_cost",
+    "maintenance_cost",
+    "estimated_repair_cost_usd",
   ]);
   const riskText = pickFirstString(predictionValue ?? result?.data, [
     "risk",
@@ -228,8 +263,22 @@ export default function DemoPage() {
   };
 
   const handleMoldIdChange = (value: string) => {
+    if (value.trim() === "") {
+      setEmailSent(false);
+      setShowEmailForm(false);
+      setEmailStatus(null);
+      setReportEmail("");
+      setErrors([]);
+      setResult(null);
+    }
     setFormState((prev) => {
       if (prev.moldId && prev.moldId !== value) {
+        setEmailSent(false);
+        setShowEmailForm(false);
+        setEmailStatus(null);
+        setReportEmail("");
+        setErrors([]);
+        setResult(null);
         return {
           ...prev,
           moldId: value,
@@ -297,18 +346,72 @@ export default function DemoPage() {
     }
   };
 
+  const handleEmailSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setEmailStatus(null);
+    setEmailError(null);
+
+    if (!result?.data) {
+      setEmailError("Run a prediction before emailing the report.");
+      return;
+    }
+
+    setIsEmailSending(true);
+    try {
+      const response = await fetch("/api/email-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          toEmail: reportEmail,
+          reportData: result.data,
+        }),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setEmailError(
+          payload?.error ?? "Unable to send email report."
+        );
+        return;
+      }
+
+      setEmailStatus("Thanks! We will email your report soon.");
+      setEmailSent(true);
+      setShowEmailForm(false);
+    } catch (error) {
+      setEmailError("Unable to send email report.");
+    } finally {
+      setIsEmailSending(false);
+    }
+  };
+
   const anticipatedRunTime = toNumber(
     formState.anticipatedRunTimeDays,
     0
   );
-  const riskMarker =
-    riskText && riskText.toLowerCase().includes("high")
-      ? "75%"
-      : riskText && riskText.toLowerCase().includes("medium")
-      ? "50%"
-      : riskText && riskText.toLowerCase().includes("low")
-      ? "25%"
-      : "50%";
+  const riskMarker = (() => {
+    if (
+      anticipatedRunTime > 0 &&
+      typeof predictedDays === "number" &&
+      predictedDays > 0
+    ) {
+      const ratio = Math.min(
+        Math.max(anticipatedRunTime / predictedDays, 0),
+        1
+      );
+      return `${Math.round(ratio * 100)}%`;
+    }
+    if (riskText && riskText.toLowerCase().includes("high")) {
+      return "75%";
+    }
+    if (riskText && riskText.toLowerCase().includes("medium")) {
+      return "50%";
+    }
+    if (riskText && riskText.toLowerCase().includes("low")) {
+      return "25%";
+    }
+    return "50%";
+  })();
 
   return (
     <main className="min-h-screen bg-sky-50 text-slate-900">
@@ -316,18 +419,12 @@ export default function DemoPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-slate-500">
-              Predylitics Demo
+              Predylitics MoldPredict
             </p>
             <h1 className="mt-2 text-4xl font-semibold text-slate-900">
               MoldPredict Console
             </h1>
           </div>
-          <a
-            href={DOWNLOAD_URL}
-            className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700"
-          >
-            Download Full App
-          </a>
         </div>
 
         <div className="mt-4 text-sm text-slate-500">
@@ -336,54 +433,6 @@ export default function DemoPage() {
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="modelSelection"
-                  className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                >
-                  Select Prediction Model
-                </label>
-                <select
-                  id="modelSelection"
-                  value={formState.modelSelection}
-                  disabled
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-500 shadow-sm"
-                >
-                  <option value="xgb">XGBoost</option>
-                  <option value="ngb">NGBoost</option>
-                </select>
-                <p className="mt-1 text-xs text-slate-400">
-                  Demo uses XGBoost only.
-                </p>
-              </div>
-              <div>
-                <label
-                  htmlFor="yearSelection"
-                  className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                >
-                  Select Year
-                </label>
-                <select
-                  id="yearSelection"
-                  value={formState.yearSelection}
-                  onChange={(event) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      yearSelection: event.target.value,
-                    }))
-                  }
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                >
-                  {yearOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
             <form
               onSubmit={handleSubmit}
               className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
@@ -483,9 +532,9 @@ export default function DemoPage() {
                         className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                       >
                         <option value="none">None</option>
-                        <option value="small">Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
+                        <option value="simple">Simple</option>
+                        <option value="complex">Complex</option>
+                        <option value="very_complex">Very complex</option>
                       </select>
                     </div>
 
@@ -726,7 +775,7 @@ export default function DemoPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Latest Prediction
+                    Prediction Status
                   </p>
                   <h2 className="mt-2 text-xl font-semibold text-slate-900">
                     {result ? "Prediction Ready" : "Run a prediction"}
@@ -763,7 +812,9 @@ export default function DemoPage() {
                     Cost
                   </p>
                   <p className="mt-2 text-base font-semibold text-slate-900">
-                    {predictedCost ?? "-"}
+                    {typeof predictedCost === "number"
+                      ? formatCurrency(predictedCost)
+                      : "-"}
                   </p>
                 </div>
               </div>
@@ -783,33 +834,70 @@ export default function DemoPage() {
                 </div>
               ) : null}
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 space-y-4">
                 <button
                   type="button"
-                  className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800"
+                  disabled={emailSent || isEmailSending}
+                  onClick={() => {
+                    if (emailSent) {
+                      return;
+                    }
+                    setShowEmailForm((prev) => !prev);
+                    setEmailStatus(null);
+                    setEmailError(null);
+                  }}
+                  className={`rounded-md border px-4 py-2 text-sm font-semibold ${
+                    emailSent
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-slate-200 text-slate-700 transition hover:border-blue-200 hover:text-blue-700"
+                  }`}
                 >
-                  Submit
+                  {emailSent ? "Email sent ✓" : "Email report"}
                 </button>
-                <button
-                  type="button"
-                  className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-700"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-700"
-                >
-                  Get Coverage
-                </button>
-                <button
-                  type="button"
-                  disabled
-                  title="Coming soon"
-                  className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400"
-                >
-                  Email report
-                </button>
+
+                {showEmailForm ? (
+                  <form
+                    onSubmit={handleEmailSubmit}
+                    className="rounded-lg border border-slate-200 bg-slate-50 p-4"
+                  >
+                    <label
+                      htmlFor="reportEmail"
+                      className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                    >
+                      Email address
+                    </label>
+                    <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                      <input
+                        id="reportEmail"
+                        type="email"
+                        required
+                        value={reportEmail}
+                        onChange={(event) =>
+                          setReportEmail(event.target.value)
+                        }
+                        placeholder="you@company.com"
+                        className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isEmailSending}
+                        className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800"
+                      >
+                        {isEmailSending ? "Sending..." : "Submit"}
+                      </button>
+                    </div>
+                  </form>
+                ) : null}
+                {emailStatus ? (
+                  <p className="text-sm text-emerald-600">
+                    {emailStatus}
+                  </p>
+                ) : null}
+                {emailError ? (
+                  <p className="text-sm text-rose-600">
+                    {emailError}
+                  </p>
+                ) : null}
               </div>
             </div>
 
