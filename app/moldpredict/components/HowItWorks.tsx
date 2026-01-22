@@ -1,12 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface HowItWorksProps {
   onClose: () => void;
 }
 
-const screens = [
+interface Screen {
+  title: string;
+  desc: string;
+  imgType: "video" | "image";
+  imgSrc?: string;
+}
+
+const screens: Screen[] = [
   {
     title: "Input",
     desc: "Provide your mold data, plastic type, and process parameters to generate predictions.",
@@ -16,6 +24,7 @@ const screens = [
     title: "Output",
     desc: "View the predicted days to overhaul, expected costs, risk metrics, and more.",
     imgType: "image",
+    imgSrc: "/images/OutputExplanation.png",
   },
 ];
 
@@ -24,14 +33,14 @@ export default function HowItWorks({ onClose }: HowItWorksProps) {
     <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start overflow-y-auto py-20">
       <div className="bg-blue-50 rounded-3xl max-w-4xl w-full mx-4 p-8 shadow-2xl">
         {/* Header */}
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex justify-center items-center mb-12 relative">
           <h1 className="text-4xl font-bold text-blue-700 text-center w-full">
             How MoldPredict™ Works
           </h1>
 
           <button
             onClick={onClose}
-            className="absolute top-8 right-8 text-gray-500 hover:text-blue-600 text-lg"
+            className="absolute top-0 right-0 text-gray-500 hover:text-blue-600 text-lg"
           >
             ✕
           </button>
@@ -57,15 +66,21 @@ export default function HowItWorks({ onClose }: HowItWorksProps) {
               </p>
             </div>
 
-            {/* Placeholder */}
+            {/* Media */}
             <div className="w-full max-w-3xl">
               {screen.imgType === "video" ? (
                 <div className="aspect-video bg-black border rounded-3xl shadow-lg flex items-center justify-center text-gray-400 text-2xl">
                   Video placeholder
                 </div>
               ) : (
-                <div className="aspect-video bg-white border rounded-3xl shadow-lg flex items-center justify-center text-gray-400 text-2xl">
-                  Image placeholder
+                <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-lg">
+                  <Image
+                    src={screen.imgSrc!}
+                    alt={`${screen.title} Illustration`}
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
               )}
             </div>
