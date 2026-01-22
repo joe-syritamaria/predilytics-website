@@ -364,6 +364,22 @@ export default function DemoPage() {
         body: JSON.stringify({
           toEmail: reportEmail,
           reportData: result.data,
+          moldId: formState.moldId,
+          riskLabel,
+          formData: {
+            complexity: formState.complexity,
+            size: formState.size,
+            sideActions: formState.sideActions,
+            runnerType: formState.runnerType,
+            maintenanceIntervalDays: formState.maintenanceIntervalDays,
+            minorRepairsCount: formState.minorRepairsCount,
+            plasticType: formState.plasticType,
+            cycleTimeSeconds: formState.cycleTimeSeconds,
+            hoursPerDay: formState.hoursPerDay,
+            totalCycles: formState.totalCycles,
+            anticipatedRunTimeDays: formState.anticipatedRunTimeDays,
+            cyclesSinceOverhaul: formState.cyclesSinceOverhaul,
+          },
         }),
       });
 
@@ -411,6 +427,28 @@ export default function DemoPage() {
       return "25%";
     }
     return "50%";
+  })();
+
+  const riskLabel = (() => {
+    if (
+      anticipatedRunTime > 0 &&
+      typeof predictedDays === "number" &&
+      predictedDays > 0
+    ) {
+      return anticipatedRunTime > predictedDays
+        ? "Risky to run"
+        : "Safe to run";
+    }
+    if (riskText) {
+      const normalized = riskText.toLowerCase();
+      if (normalized.includes("high") || normalized.includes("medium")) {
+        return "Risky to run";
+      }
+      if (normalized.includes("low") || normalized.includes("safe")) {
+        return "Safe to run";
+      }
+    }
+    return "Risk level unknown";
   })();
 
   return (
