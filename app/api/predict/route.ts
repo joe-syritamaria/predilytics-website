@@ -1,6 +1,25 @@
 import { NextResponse } from "next/server";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+const parseJwt = (token: string) => {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) {
+      return null;
+    }
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "="
+    );
+    const json = Buffer.from(padded, "base64").toString("utf8");
+    return JSON.parse(json) as Record<string, unknown>;
+  } catch (error) {
+    return null;
+  }
+};
+
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
 const INFERENCE_URL = process.env.INFERENCE_URL;
 
@@ -12,7 +31,22 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = await createSupabaseServerClient();
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: (name, value, options) => {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove: (name, options) => {
+          cookieStore.set({ name, value: "", ...options });
+        },
+      },
+    }
+  );
   const { data: sessionData, error: sessionError } =
     await supabase.auth.getSession();
   const accessToken = sessionData.session?.access_token;
@@ -21,6 +55,14 @@ export async function POST(request: Request) {
       { error: "Unauthorized." },
       { status: 401 }
     );
+  }
+  const tokenPayload = parseJwt(accessToken);
+  const tokenIssuer =
+    typeof tokenPayload?.iss === "string"
+      ? tokenPayload.iss
+      : "";
+  if (tokenIssuer) {
+    console.log("[predict] token iss:", tokenIssuer);
   }
 
   let payload: unknown;
@@ -51,9 +93,13 @@ export async function POST(request: Request) {
       data = { raw: text };
     }
 
+    const headers =
+      tokenIssuer && process.env.NODE_ENV !== "production"
+        ? new Headers({ "X-Token-Iss": tokenIssuer })
+        : undefined;
     return NextResponse.json(
       { data },
-      { status: response.status }
+      { status: response.status, headers }
     );
   } catch (error) {
     return NextResponse.json(
