@@ -332,6 +332,7 @@ export default function DemoClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildPredictBody(formState)),
+        credentials: "include",
       });
 
       const payload = await response.json().catch(() => ({}));
