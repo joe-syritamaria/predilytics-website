@@ -1,82 +1,54 @@
 import { NextResponse } from "next/server";
-
-const parseJwt = (token: string) => {
-  try {
-    const payload = token.split(".")[1];
-    if (!payload) {
-      return null;
-    }
-    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = normalized.padEnd(
-      normalized.length + ((4 - (normalized.length % 4)) % 4),
-      "="
-    );
-    const json = Buffer.from(padded, "base64").toString("utf8");
-    return JSON.parse(json) as Record<string, unknown>;
-  } catch (error) {
-    return null;
-  }
-};
-
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-const INFERENCE_URL = process.env.INFERENCE_URL;
-
 export async function POST(request: Request) {
-  if (!INFERENCE_URL) {
-    return NextResponse.json(
-      { error: "Missing INFERENCE_URL configuration." },
-      { status: 500 }
-    );
+  const inferenceUrl = process.env.INFERENCE_URL;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!inferenceUrl) {
+    return NextResponse.json({ error: "Missing INFERENCE_URL." }, { status: 500 });
+  }
+  if (!supabaseUrl || !supabaseAnon) {
+    return NextResponse.json({ error: "Missing Supabase env vars." }, { status: 500 });
   }
 
   const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-        set: (name, value, options) => {
-          cookieStore.set({ name, value, ...options });
-        },
-        remove: (name, options) => {
-          cookieStore.set({ name, value: "", ...options });
-        },
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnon, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll().map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value,
+        }));
       },
-    }
-  );
-  const { data: sessionData, error: sessionError } =
-    await supabase.auth.getSession();
-  const accessToken = sessionData.session?.access_token;
-  if (sessionError || !accessToken) {
-    return NextResponse.json(
-      { error: "Unauthorized." },
-      { status: 401 }
-    );
-  }
-  const tokenPayload = parseJwt(accessToken);
-  const tokenIssuer =
-    typeof tokenPayload?.iss === "string"
-      ? tokenPayload.iss
-      : "";
-  if (tokenIssuer) {
-    console.log("[predict] token iss:", tokenIssuer);
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          cookieStore.set({ name, value, ...options });
+        });
+      },
+    },
+  });
+
+  const { data, error } = await supabase.auth.getSession();
+  const accessToken = data.session?.access_token;
+
+  if (error || !accessToken) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
   let payload: unknown;
   try {
     payload = await request.json();
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Invalid JSON payload." },
-      { status: 400 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON payload." }, { status: 400 });
   }
 
+  let upstream: Response;
   try {
-    const response = await fetch(`${INFERENCE_URL}/api/molds/predict`, {
+    upstream = await fetch(`${inferenceUrl}/api/molds/predict`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,27 +56,15 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify(payload),
     });
-
-    const text = await response.text();
-    let data: unknown = null;
-    try {
-      data = text ? JSON.parse(text) : null;
-    } catch (error) {
-      data = { raw: text };
-    }
-
-    const headers =
-      tokenIssuer && process.env.NODE_ENV !== "production"
-        ? new Headers({ "X-Token-Iss": tokenIssuer })
-        : undefined;
-    return NextResponse.json(
-      { data },
-      { status: response.status, headers }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to reach inference service." },
-      { status: 502 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Failed to reach inference service." }, { status: 502 });
   }
+
+  const text = await upstream.text();
+  const contentType = upstream.headers.get("content-type") ?? "application/json";
+
+  return new NextResponse(text, {
+    status: upstream.status,
+    headers: { "Content-Type": contentType },
+  });
 }
