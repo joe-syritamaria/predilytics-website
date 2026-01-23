@@ -30,7 +30,7 @@ export function HomeSection() {
         </h1>
 
         <p className="text-lg text-gray-600 mb-4">
-          Predylitics builds intelligent analytics tools that help manufacturers
+          Predilytics builds intelligent analytics tools that help manufacturers
           anticipate repairs, manage risk, and optimize performance.
         </p>
 

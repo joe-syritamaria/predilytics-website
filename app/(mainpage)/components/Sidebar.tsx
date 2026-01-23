@@ -8,7 +8,7 @@ type SidebarProps = {
   showLogo?: boolean;
 };
 
-export function PredyliticsSidebar({ active, setActive, showLogo = false }: SidebarProps) {
+export function PredilyticsSidebar({ active, setActive, showLogo = false }: SidebarProps) {
   return (
     <aside className="w-64 bg-white border-r border-gray-200 min-h-screen px-6 py-8">
       <motion.div
@@ -17,7 +17,7 @@ export function PredyliticsSidebar({ active, setActive, showLogo = false }: Side
         animate={{ y: showLogo ? 0 : -50, opacity: showLogo ? 1 : 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
       >
-        Predylitics
+        Predilytics
       </motion.div>
 
       <nav className="space-y-2">
