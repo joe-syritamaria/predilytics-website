@@ -4,12 +4,12 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { IntroSequence } from "./components/IntroSequence";
-import { PredyliticsSidebar } from "./components/Sidebar";
+import { PredilyticsSidebar } from "./components/Sidebar";
 import { HomeSection } from "./components/HomeSection";
 import { ProductsSection } from "./components/ProductsSection";
 import { ContactSection } from "./components/ContactSection";
 
-export default function PredyliticsPage() {
+export default function PredilyticsPage() {
   const [activeSection, setActiveSection] = useState("home");
   const [showIntro, setShowIntro] = useState(true);
   const [introComplete, setIntroComplete] = useState(false);
@@ -30,7 +30,7 @@ export default function PredyliticsPage() {
 
       {/* Main content */}
       <div className="flex min-h-screen bg-blue-50">
-        <PredyliticsSidebar
+        <PredilyticsSidebar
           active={activeSection}
           setActive={setActiveSection}
           showLogo={introComplete}

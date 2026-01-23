@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = "Predylitics <no-reply@predilyticsinc.com>";
+const FROM_EMAIL = "Predilytics <no-reply@predilyticsinc.com>";
 
 export async function POST(request: Request) {
   if (!process.env.RESEND_API_KEY) {
@@ -98,8 +98,8 @@ export async function POST(request: Request) {
       subject,
       html: `
         <div style="font-family:Arial,Helvetica,sans-serif;color:#0f172a;">
-          <h2 style="margin:0 0 12px;">Predylitics MoldPredict</h2>
-          <p style="margin:0 0 16px;">Thanks for using Predylitics MoldPredict. Here is your report summary.</p>
+          <h2 style="margin:0 0 12px;">Predilytics MoldPredict</h2>
+          <p style="margin:0 0 16px;">Thanks for using Predilytics MoldPredict. Here is your report summary.</p>
 
           <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
             <thead>

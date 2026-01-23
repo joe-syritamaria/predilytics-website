@@ -88,7 +88,7 @@ export default function LoginPage() {
       <div className="mx-auto flex min-h-screen w-full max-w-xl flex-col justify-center px-6 py-12">
         <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8 shadow-xl shadow-slate-950/40">
           <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
-            Predylitics Demo
+            Predilytics Demo
           </p>
           <h1 className="mt-3 text-3xl font-semibold">
             {mode === "sign_in"

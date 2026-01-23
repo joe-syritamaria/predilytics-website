@@ -1,6 +1,8 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type FormState = {
   moldId: string;
@@ -203,6 +205,12 @@ export default function DemoClient() {
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isEmailSending, setIsEmailSending] = useState(false);
+  const [hasAgreed, setHasAgreed] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const supabase = useMemo(
+    () => createSupabaseBrowserClient(),
+    []
+  );
 
   useEffect(() => {
     fetch("/api/health")
@@ -457,11 +465,40 @@ export default function DemoClient() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-slate-500">
-              Predylitics MoldPredict
+              Predilytics MoldPredict
             </p>
             <h1 className="mt-2 text-4xl font-semibold text-slate-900">
               MoldPredict Console
             </h1>
+          </div>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700"
+            >
+              Account
+              <span className="text-base">▾</span>
+            </button>
+            {isMenuOpen ? (
+              <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 text-sm text-slate-700 shadow-xl">
+                <div className="rounded-xl border border-slate-100 px-3 py-2 text-xs uppercase tracking-wide text-slate-400">
+                  Account
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setIsMenuOpen(false);
+                    await supabase.auth.signOut();
+                    window.location.href = "/login";
+                  }}
+                  className="mt-2 flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                >
+                  Log out
+                  <span className="text-base">→</span>
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -798,9 +835,53 @@ export default function DemoClient() {
                 </div>
               ) : null}
 
+              <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <button
+                  type="button"
+                  onClick={() => setHasAgreed((prev) => !prev)}
+                  className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold uppercase tracking-wide ${
+                    hasAgreed
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-slate-300 bg-white text-slate-700"
+                  }`}
+                >
+                  <span
+                    className={`flex h-4 w-4 items-center justify-center rounded-sm border text-[10px] ${
+                      hasAgreed
+                        ? "border-emerald-500 bg-emerald-500 text-white"
+                        : "border-slate-400"
+                    }`}
+                  >
+                    {hasAgreed ? "✓" : ""}
+                  </span>
+                  Agree
+                </button>
+                <p className="mt-3 text-xs text-slate-500">
+                  Disclaimer.
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                  By clicking this box and clicking "Run Prediction" button,
+                  you confirm that you are a human user and agree to these
+                  terms: 1. the user acknowledges that the report (AI-generated)
+                  and subsequent email (automated) contents are solely intended
+                  for reference purposes, and further agrees that their inputs
+                  are factual for the purpose of generating reports with the
+                  help of Moldpredict Console webpage. 2. the user acknowledges
+                  that the prediction generated may not reflect real-world
+                  scenarios. 3. the user consents to the use of all input data
+                  towards the purpose of training the model. 4. the user
+                  acknowledges that no warranties, express or implied, are made
+                  regarding accuracy, completeness, or fitness of the report
+                  for any particular purposes. 5. the user acknowledges that
+                  the usage, consequences and repercussions of this report is
+                  not binding to Moldpredict or to Predilytics Inc.; and any/all
+                  decisions based on this report is at the user's own risk
+                </p>
+              </div>
+
               <button
                 type="submit"
-                disabled={isRunning}
+                disabled={isRunning || !hasAgreed}
                 className="mt-8 inline-flex w-full items-center justify-center rounded-md bg-blue-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-blue-400"
               >
                 {isRunning ? loadingLabel : "Run prediction"}
@@ -923,6 +1004,11 @@ export default function DemoClient() {
                       >
                         {isEmailSending ? "Sending..." : "Submit"}
                       </button>
+                    </div>
+                    <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-[11px] leading-relaxed text-slate-500">
+                      By clicking "Submit", you agree to our privacy policy and
+                      agree to receive further email notifications regarding
+                      product updates and marketing.
                     </div>
                   </form>
                 ) : null}
