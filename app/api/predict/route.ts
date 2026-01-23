@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
 const INFERENCE_URL = process.env.INFERENCE_URL;
 
 export async function POST(request: Request) {
@@ -7,6 +9,17 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Missing INFERENCE_URL configuration." },
       { status: 500 }
+    );
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (sessionError || !accessToken) {
+    return NextResponse.json(
+      { error: "Unauthorized." },
+      { status: 401 }
     );
   }
 
@@ -23,7 +36,10 @@ export async function POST(request: Request) {
   try {
     const response = await fetch(`${INFERENCE_URL}/api/molds/predict`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: JSON.stringify(payload),
     });
 
