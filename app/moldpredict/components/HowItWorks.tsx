@@ -17,8 +17,9 @@ interface Screen {
 const screens: Screen[] = [
   {
     title: "Input",
-    desc: "Provide your mold data, plastic type, and process parameters to generate predictions.",
+    desc: "Provide your mold data, plastic type, and process parameters to generate predictions. Watch this video to see it in action!",
     imgType: "video",
+    imgSrc: "https://www.youtube.com/embed/0m502UbHSXM", // YouTube embed URL
   },
   {
     title: "Output",
@@ -69,8 +70,15 @@ export default function HowItWorks({ onClose }: HowItWorksProps) {
             {/* Media */}
             <div className="w-full max-w-3xl">
               {screen.imgType === "video" ? (
-                <div className="aspect-video bg-black border rounded-3xl shadow-lg flex items-center justify-center text-gray-400 text-2xl">
-                  Video placeholder
+                <div className="aspect-video rounded-3xl overflow-hidden shadow-lg">
+                  <iframe
+                    src={screen.imgSrc}
+                    title="Predilytics Demo Video"
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               ) : (
                 <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-lg">
