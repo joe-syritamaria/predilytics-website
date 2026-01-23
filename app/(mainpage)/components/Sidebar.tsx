@@ -17,7 +17,7 @@ export function PredyliticsSidebar({ active, setActive, showLogo = false }: Side
         animate={{ y: showLogo ? 0 : -50, opacity: showLogo ? 1 : 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
       >
-        Predylitics
+        Predilytics
       </motion.div>
 
       <nav className="space-y-2">
