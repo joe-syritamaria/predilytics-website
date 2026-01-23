@@ -4,12 +4,12 @@ import { createServerClient } from "@supabase/ssr";
 
 export async function POST(request: Request) {
   const inferenceUrl = process.env.INFERENCE_URL;
-  if (!inferenceUrl) {
-    return NextResponse.json({ error: "Missing INFERENCE_URL configuration." }, { status: 500 });
-  }
-
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!inferenceUrl) {
+    return NextResponse.json({ error: "Missing INFERENCE_URL." }, { status: 500 });
+  }
   if (!supabaseUrl || !supabaseAnon) {
     return NextResponse.json({ error: "Missing Supabase env vars." }, { status: 500 });
   }
@@ -18,9 +18,17 @@ export async function POST(request: Request) {
 
   const supabase = createServerClient(supabaseUrl, supabaseAnon, {
     cookies: {
-      get: (name) => cookieStore.get(name)?.value,
-      set: (name, value, options) => cookieStore.set({ name, value, ...options }),
-      remove: (name, options) => cookieStore.set({ name, value: "", ...options }),
+      getAll() {
+        return cookieStore.getAll().map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value,
+        }));
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          cookieStore.set({ name, value, ...options });
+        });
+      },
     },
   });
 
@@ -48,26 +56,15 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify(payload),
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to reach inference service." }, { status: 502 });
   }
 
-  const contentType = upstream.headers.get("content-type") ?? "";
   const text = await upstream.text();
+  const contentType = upstream.headers.get("content-type") ?? "application/json";
 
-  // If upstream is JSON, forward it as JSON
-  if (contentType.includes("application/json")) {
-    try {
-      const json = text ? JSON.parse(text) : null;
-      return NextResponse.json(json, { status: upstream.status });
-    } catch {
-      return new NextResponse(text, { status: upstream.status, headers: { "Content-Type": contentType } });
-    }
-  }
-
-  // Otherwise forward raw
   return new NextResponse(text, {
     status: upstream.status,
-    headers: { "Content-Type": contentType || "text/plain" },
+    headers: { "Content-Type": contentType },
   });
 }
