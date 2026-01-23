@@ -23,23 +23,21 @@ export default function Hero({ onSeeHow }: HeroProps) {
       </p>
 
       <div className="mt-10 flex justify-center gap-4">
-        <button className="px-8 py-4 bg-blue-600 text-white rounded-xl text-lg font-medium hover:bg-blue-700 transform hover:scale-105 transition duration-300">
-          Download App
-        </button>
+        {/* Try It Out button styled like the previous Download button */}
+        <Link
+          href="/demo"
+          className="px-8 py-4 bg-blue-600 text-white rounded-xl text-lg font-medium hover:bg-blue-700 transform hover:scale-105 transition duration-300"
+        >
+          Try It Out
+        </Link>
 
+        {/* See How It Works button keeps secondary style */}
         <button
           onClick={onSeeHow} // trigger the HowItWorks modal
           className="px-8 py-4 border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-blue-100 transform hover:scale-105 transition duration-300"
         >
           See How It Works
         </button>
-
-        <Link
-          href="/demo"
-          className="px-8 py-4 border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-blue-100 transform hover:scale-105 transition duration-300"
-        >
-          Try It Out
-        </Link>
       </div>
     </section>
   );
