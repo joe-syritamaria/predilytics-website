@@ -158,10 +158,10 @@ export function ContactSection() {
                     Email
                   </p>
                   <a
-                    href="mailto:support@predylitics.com"
+                    href="mailto:support@predilyticsinc.com"
                     className="mt-2 inline-flex text-base font-semibold text-blue-700"
                   >
-                    support@predylitics.com
+                    support@predilyticsinc.com
                   </a>
                 </div>
 
@@ -179,7 +179,7 @@ export function ContactSection() {
                     Address
                   </p>
                   <p className="mt-2 text-base font-semibold text-slate-900">
-                    2108 N St Ste N
+                    2108 N St # 14479
                     <br />
                     Sacramento, CA 95816
                   </p>
@@ -191,12 +191,12 @@ export function ContactSection() {
               {[
                 {
                   title: "General Inquiries",
-                  subtitle: "sales@predyliticsinc.com",
+                  subtitle: "sales@predilyticsinc.com",
                 },
                 { title: "Careers", subtitle: "View open positions" },
                 {
                   title: "Customer Support",
-                  subtitle: "support@predyliticsinc.com",
+                  subtitle: "support@predilyticsinc.com",
                 },
                 {
                   title: "Become a Partner",

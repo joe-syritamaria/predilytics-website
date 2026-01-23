@@ -39,7 +39,7 @@ export default function Pricing() {
                 {tier.title}
               </h3>
 
-              <p className="mt-4 text-gray-600 flex-grow">
+              <p className="mt-4 text-gray-600 grow">
                 {tier.description}
               </p>
 
