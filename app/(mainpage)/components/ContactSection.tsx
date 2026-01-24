@@ -13,8 +13,15 @@ export function ContactSection() {
     setSubmitted(true);
   };
 
+  const contactCards = [
+    { title: "General Inquiries", subtitle: "sales@predilyticsinc.com", id: "general" },
+    { title: "Careers", subtitle: "View open positions", id: "careers" },
+    { title: "Customer Support", subtitle: "support@predilyticsinc.com", id: "support" },
+    { title: "Become a Partner", subtitle: "Partner opportunities", id: "partner" },
+  ];
+
   return (
-    <section className="bg-sky-50 py-16">
+    <section id="contact" className="bg-sky-50 py-16">
       <div className="mx-auto w-full max-w-6xl px-4">
         <h2 className="text-4xl font-semibold text-slate-900">
           Contact Us
@@ -25,12 +32,10 @@ export function ContactSection() {
             onSubmit={handleSubmit}
             className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
           >
+            {/* Form fields unchanged */}
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                >
+                <label htmlFor="firstName" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
                   First name
                 </label>
                 <input
@@ -44,10 +49,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                >
+                <label htmlFor="lastName" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Last name
                 </label>
                 <input
@@ -62,10 +64,7 @@ export function ContactSection() {
             </div>
 
             <div className="mt-6">
-              <label
-                htmlFor="email"
-                className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-              >
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Email
               </label>
               <input
@@ -79,10 +78,7 @@ export function ContactSection() {
             </div>
 
             <div className="mt-6">
-              <label
-                htmlFor="phone"
-                className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-              >
+              <label htmlFor="phone" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Phone number
               </label>
               <input
@@ -96,10 +92,7 @@ export function ContactSection() {
             </div>
 
             <div className="mt-6">
-              <label
-                htmlFor="company"
-                className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-              >
+              <label htmlFor="company" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Company (if applicable)
               </label>
               <input
@@ -112,10 +105,7 @@ export function ContactSection() {
             </div>
 
             <div className="mt-6">
-              <label
-                htmlFor="reason"
-                className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-              >
+              <label htmlFor="reason" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Reason / Priority
               </label>
               <select
@@ -139,11 +129,11 @@ export function ContactSection() {
               <ArrowRight className="h-4 w-4" />
             </button>
 
-            {submitted ? (
+            {submitted && (
               <p className="mt-4 text-sm text-emerald-600">
                 Thanks! Your inquiry has been sent.
               </p>
-            ) : null}
+            )}
           </form>
 
           <div className="space-y-8">
@@ -188,23 +178,10 @@ export function ContactSection() {
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              {[
-                {
-                  title: "General Inquiries",
-                  subtitle: "sales@predilyticsinc.com",
-                },
-                { title: "Careers", subtitle: "View open positions" },
-                {
-                  title: "Customer Support",
-                  subtitle: "support@predilyticsinc.com",
-                },
-                {
-                  title: "Become a Partner",
-                  subtitle: "Partner opportunities",
-                },
-              ].map((card) => (
+              {contactCards.map((card) => (
                 <a
-                  key={card.title}
+                  key={card.id}
+                  id={card.id} // ✅ Add ID here for direct linking
                   href="#"
                   className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 >
