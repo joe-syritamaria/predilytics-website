@@ -3,6 +3,7 @@ const pricingTiers = [
     title: "Free",
     description: "Basic predictions and limited projects.",
     cta: "Get Started",
+    href: "https://predilyticsinc.com/login",
   },
   {
     title: "Premium",
@@ -20,9 +21,7 @@ export default function Pricing() {
   return (
     <section className="bg-white py-24">
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-blue-700">
-          Pricing
-        </h2>
+        <h2 className="text-4xl font-bold text-blue-700">Pricing</h2>
 
         <p className="mt-6 max-w-3xl mx-auto text-gray-600 text-lg">
           Choose a plan that fits your team’s needs. Upgrade as your
@@ -43,11 +42,21 @@ export default function Pricing() {
                 {tier.description}
               </p>
 
-              <button
-                className="mt-8 w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
-              >
-                {tier.cta}
-              </button>
+              {tier.href ? (
+                <a
+                  href={tier.href}
+                  className="mt-8 w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition text-center"
+                >
+                  {tier.cta}
+                </a>
+              ) : (
+                <button
+                  disabled
+                  className="mt-8 w-full py-3 bg-gray-300 text-gray-500 rounded-xl cursor-not-allowed"
+                >
+                  {tier.cta}
+                </button>
+              )}
             </div>
           ))}
         </div>
