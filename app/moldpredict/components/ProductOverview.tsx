@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function ProductOverview() {
   return (
     <section className="py-24 bg-blue-50">
@@ -13,9 +15,14 @@ export default function ProductOverview() {
           so teams can plan decisions before a repair happens.
         </p>
 
-        {/* Video Placeholder */}
-        <div className="mt-12 aspect-video bg-white border rounded-2xl flex items-center justify-center text-gray-400">
-          Product setup & walkthrough video
+        {/* Image Placeholder */}
+        <div className="mt-12 relative w-full max-w-4xl mx-auto aspect-video bg-white border rounded-2xl overflow-hidden flex items-center justify-center">
+          <Image
+            src="/images/AboutMoldPredict.png"
+            alt="About MoldPredict"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </div>
       </div>
     </section>
