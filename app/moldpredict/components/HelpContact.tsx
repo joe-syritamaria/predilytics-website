@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function HelpContact() {
   return (
     <section className="py-24 bg-blue-50">
@@ -29,9 +31,12 @@ export default function HelpContact() {
             <p className="mt-3 text-gray-600">
               Report issues or request help from our support team.
             </p>
-            <button className="mt-6 w-full py-3 border border-blue-600 text-blue-600 rounded-xl hover:bg-blue-100 transition">
+            <Link
+              href="/moldpredict/ticket"
+              className="mt-6 block w-full rounded-xl border border-blue-600 py-3 text-center text-blue-600 transition hover:bg-blue-100"
+            >
               Submit Ticket
-            </button>
+            </Link>
           </div>
 
           {/* Call / Phone */}
