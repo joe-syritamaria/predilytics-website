@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { getClientIdentifier, rateLimit } from "@/lib/rateLimit";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Predilytics <no-reply@predilyticsinc.com>";
 const SUPPORT_EMAIL = "support@predilyticsinc.com";
 
 export async function POST(request: Request) {
+  const clientId = getClientIdentifier(request);
+  const limit = rateLimit(`support-ticket:${clientId}`, 5, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": Math.ceil(limit.retryAfterMs / 1000).toString() } }
+    );
+  }
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json(
       { error: "Missing RESEND_API_KEY configuration." },

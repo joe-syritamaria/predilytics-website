@@ -17,8 +17,8 @@ export default function MarketingFooter() {
               next predictive analytics initiative.
             </p>
             <Link
-              href="/contact"
-              className="mt-5 inline-flex items-center justify-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800"
+              href="/#contact"
+              className="mt-5 inline-flex items-center justify-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 focus-visible:ring-2 focus-visible:ring-blue-300"
             >
               Contact Us
             </Link>
@@ -31,7 +31,7 @@ export default function MarketingFooter() {
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
                 <li>
-                  <Link href="/moldpredict" className="hover:text-blue-700">
+                  <Link href="/moldpredict" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     MoldPredict
                   </Link>
                 </li>
@@ -44,17 +44,17 @@ export default function MarketingFooter() {
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
                 <li>
-                  <Link href="/moldpredict/ticket" className="hover:text-blue-700">
+                  <Link href="/moldpredict/ticket" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="/tutorials" className="hover:text-blue-700">
+                  <Link href="/tutorials" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     Tutorials
                   </Link>
                 </li>
                 <li>
-                  <Link href="/whitepapers" className="hover:text-blue-700">
+                  <Link href="/whitepapers" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     White Papers
                   </Link>
                 </li>
@@ -67,12 +67,12 @@ export default function MarketingFooter() {
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
                 <li>
-                  <Link href="/about" className="hover:text-blue-700">
+                  <Link href="/about" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-blue-700">
+                  <Link href="/contact" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     Contact
                   </Link>
                 </li>
@@ -85,12 +85,12 @@ export default function MarketingFooter() {
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
                 <li>
-                  <Link href="/privacy-policy" className="hover:text-blue-700">
+                  <Link href="/privacy-policy" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-and-conditions" className="hover:text-blue-700">
+                  <Link href="/terms-and-conditions" className="hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300">
                     Terms of Service
                   </Link>
                 </li>
