@@ -20,23 +20,23 @@ export function HomeSection() {
         }}
       >
         <span className="inline-block mb-4 px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
-          Predictive analytics platform
+          Predictive maintenance analytics
         </span>
 
         <h1 className="text-4xl font-semibold text-gray-900 mb-6 leading-tight">
-          Smarter decisions
+          Predict mold maintenance
           <br />
-          powered by predictive insight
+          before downtime hits
         </h1>
 
         <p className="text-lg text-gray-600 mb-4">
-          Predilytics builds intelligent analytics tools that help manufacturers
-          anticipate repairs, manage risk, and optimize performance.
+          Predilytics helps manufacturing teams forecast mold risk, schedule
+          maintenance, and avoid unplanned downtime with data-driven insights.
         </p>
 
         <p className="text-gray-500">
-          Our products transform operational data into forward-looking insight,
-          enabling teams to act with confidence instead of waiting to react.
+          See risk, cost, and timing in one place so your team can act with
+          confidence and stay ahead of production disruptions.
         </p>
       </motion.div>
 
