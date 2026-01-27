@@ -8,19 +8,25 @@ export default function AboutPage() {
       name: "Biju Jose",
       role: "Co-Founder",
       linkedIn: "https://www.linkedin.com/in/bijujose1",
-      photo: "/founders/biju.png", // image in public/founders/
+      photo: "/founders/biju.png",
     },
     {
-      name: "Founder 2",
+      name: "Sincy Joe",
       role: "Co-Founder",
       linkedIn: "#",
-      photo: "/founders/founder2.jpg",
+      photo: "/founders/sincy.png",
     },
     {
-      name: "Founder 3",
+      name: "Syrita Joe",
       role: "Co-Founder",
       linkedIn: "#",
       photo: "/founders/founder3.jpg",
+    },
+    {
+      name: "Celes John",
+      role: "Co-Founder",
+      linkedIn: "#",
+      photo: "/founders/founder4.jpg",
     },
   ];
 
@@ -40,20 +46,24 @@ export default function AboutPage() {
         <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
           <h2 className="text-2xl font-semibold text-blue-700 mb-3">Our Vision</h2>
           <p className="text-slate-600 leading-relaxed">
-            To become the intelligence layer manufacturers rely on to anticipate risk, optimize operations, and build resilient systems.
+            To become the intelligence layer manufacturers rely on to anticipate risk,
+            optimize operations, and build resilient systems.
           </p>
         </div>
         <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
           <h2 className="text-2xl font-semibold text-blue-700 mb-3">Our Mission</h2>
           <p className="text-slate-600 leading-relaxed">
-            We transform complex operational data into clear, actionable predictions—reducing downtime and enabling confident decisions.
+            We transform complex operational data into clear, actionable predictions—
+            reducing downtime and enabling confident decisions.
           </p>
         </div>
       </div>
 
       {/* Outcomes */}
       <div>
-        <h2 className="text-3xl font-semibold text-slate-900 text-center mb-8">Outcomes We Deliver</h2>
+        <h2 className="text-3xl font-semibold text-slate-900 text-center mb-8">
+          Outcomes We Deliver
+        </h2>
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {[
             "Early detection of operational risk and failure patterns",
@@ -73,14 +83,15 @@ export default function AboutPage() {
 
       {/* Founders */}
       <div>
-        <h2 className="text-3xl font-semibold text-slate-900 text-center mb-10">Founding Team</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <h2 className="text-3xl font-semibold text-slate-900 text-center mb-10">
+          Founding Team
+        </h2>
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
           {founders.map((f, idx) => (
             <div
               key={idx}
               className="bg-white rounded-2xl shadow p-6 flex flex-col items-center transition hover:shadow-lg hover:scale-105 duration-300"
             >
-              {/* Founder photo */}
               {f.photo && (
                 <Image
                   src={f.photo}
