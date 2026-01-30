@@ -16,7 +16,7 @@ export function ProductsSection() {
           className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 hover:shadow-md"
         >
           <h3 className="text-xl font-semibold mb-3 text-gray-900">
-            MoldPredict™
+            MoldPredict
           </h3>
 
           <p className="text-gray-600 mb-6">
@@ -30,32 +30,10 @@ export function ProductsSection() {
 
           <a
             href="/moldpredict"
-            className="text-blue-700 font-medium hover:underline"
+            className="text-blue-700 font-medium hover:underline focus-visible:ring-2 focus-visible:ring-blue-300"
           >
-            Learn more →
+            Learn more &rarr;
           </a>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ y: -6 }}
-          transition={{ type: "spring", stiffness: 260, damping: 22 }}
-          className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 opacity-80"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-gray-900">
-            XYZ
-          </h3>
-
-          <p className="text-gray-600 mb-6">
-            A future predictive analytics solution currently in development.
-          </p>
-
-          <div className="h-32 mb-6 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-400 text-sm">
-            Coming soon
-          </div>
-
-          <span className="text-gray-400 font-medium">
-            Learn more →
-          </span>
         </motion.div>
       </div>
     </div>

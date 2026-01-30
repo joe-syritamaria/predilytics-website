@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 export default function AboutPage() {
   const founders = [
     {
@@ -81,40 +79,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Founders */}
-      <div>
-        <h2 className="text-3xl font-semibold text-slate-900 text-center mb-10">
-          Founding Team
-        </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {founders.map((f, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-2xl shadow p-6 flex flex-col items-center transition hover:shadow-lg hover:scale-105 duration-300"
-            >
-              {f.photo && (
-                <Image
-                  src={f.photo}
-                  alt={f.name}
-                  width={96}
-                  height={96}
-                  className="rounded-full object-cover mb-4"
-                />
-              )}
-              <div className="text-lg font-semibold text-slate-900">{f.name}</div>
-              <div className="text-sm text-slate-500 mb-2">{f.role}</div>
-              <a
-                href={f.linkedIn}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 transition"
-              >
-                LinkedIn
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }
