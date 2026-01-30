@@ -8,8 +8,6 @@ export function ContactSection() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    console.log(Object.fromEntries(formData.entries()));
     setSubmitted(true);
   };
 
@@ -21,18 +19,20 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="bg-sky-50 py-16">
+    <section id="contact" className="bg-blue-50 py-16">
       <div className="mx-auto w-full max-w-6xl px-4">
         <h2 className="text-4xl font-semibold text-slate-900">
           Contact Us
         </h2>
+        <p className="mt-3 text-base text-slate-600">
+          Tell us what you are working on and we will follow up within one business day.
+        </p>
 
         <div className="mt-10 grid items-start gap-10 md:grid-cols-2">
           <form
             onSubmit={handleSubmit}
             className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
           >
-            {/* Form fields unchanged */}
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="firstName" className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -149,7 +149,7 @@ export function ContactSection() {
                   </p>
                   <a
                     href="mailto:support@predilyticsinc.com"
-                    className="mt-2 inline-flex text-base font-semibold text-blue-700"
+                    className="mt-2 inline-flex text-base font-semibold text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
                   >
                     support@predilyticsinc.com
                   </a>
@@ -181,9 +181,9 @@ export function ContactSection() {
               {contactCards.map((card) => (
                 <a
                   key={card.id}
-                  id={card.id} // ✅ Add ID here for direct linking
+                  id={card.id}
                   href="#"
-                  className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-300"
                 >
                   <p className="text-sm font-semibold text-slate-900">
                     {card.title}
