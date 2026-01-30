@@ -1,6 +1,33 @@
 "use client";
 
 export default function AboutPage() {
+  const founders = [
+    {
+      name: "Biju Jose",
+      role: "Co-Founder",
+      linkedIn: "https://www.linkedin.com/in/bijujose1",
+      photo: "/founders/biju.png",
+    },
+    {
+      name: "Sincy Joe",
+      role: "Co-Founder",
+      linkedIn: "#",
+      photo: "/founders/sincy.png",
+    },
+    {
+      name: "Syrita Joe",
+      role: "Co-Founder",
+      linkedIn: "#",
+      photo: "/founders/founder3.jpg",
+    },
+    {
+      name: "Celes John",
+      role: "Co-Founder",
+      linkedIn: "#",
+      photo: "/founders/founder4.jpg",
+    },
+  ];
+
   return (
     <section className="mx-auto w-full max-w-6xl px-6 py-16 space-y-16">
       {/* Header */}
