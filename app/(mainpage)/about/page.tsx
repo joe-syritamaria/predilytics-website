@@ -78,7 +78,46 @@ export default function AboutPage() {
           ))}
         </div>
       </div>
+{/* Founders */}
+<div>
+  <h2 className="text-3xl font-semibold text-slate-900 text-center mb-10">
+    Meet the Founders
+  </h2>
 
+  <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+    {founders.map((founder, idx) => (
+      <div
+        key={idx}
+        className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6 text-center"
+      >
+        <img
+          src={founder.photo}
+          alt={founder.name}
+          className="w-32 h-32 mx-auto rounded-full object-cover mb-4"
+        />
+
+        <h3 className="text-lg font-semibold text-slate-900">
+          {founder.name}
+        </h3>
+
+        <p className="text-sm text-slate-600 mb-3">
+          {founder.role}
+        </p>
+
+        {founder.linkedIn !== "#" && (
+          <a
+            href={founder.linkedIn}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 text-sm hover:underline"
+          >
+            LinkedIn
+          </a>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
     </section>
   );
 }
