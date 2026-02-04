@@ -207,6 +207,8 @@ export default function DemoClient() {
   const [isEmailSending, setIsEmailSending] = useState(false);
   const [hasAgreed, setHasAgreed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isDemoMode =
+    process.env.NEXT_PUBLIC_DEMO_MODE === "true";
   const supabase = useMemo(
     () => createSupabaseBrowserClient(),
     []
@@ -475,13 +477,24 @@ export default function DemoClient() {
           <div className="relative">
             <button
               type="button"
-              onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700"
+              onClick={() => {
+                if (isDemoMode) {
+                  return;
+                }
+                setIsMenuOpen((prev) => !prev);
+              }}
+              disabled={isDemoMode}
+              aria-disabled={isDemoMode}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition ${
+                isDemoMode
+                  ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:text-blue-700"
+              }`}
             >
               Account
               <span className="text-base">▾</span>
             </button>
-            {isMenuOpen ? (
+            {isMenuOpen && !isDemoMode ? (
               <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 text-sm text-slate-700 shadow-xl">
                 <div className="rounded-xl border border-slate-100 px-3 py-2 text-xs uppercase tracking-wide text-slate-400">
                   Account
