@@ -5,6 +5,10 @@ interface HeroProps {
 }
 
 export default function Hero({ onSeeHow }: HeroProps) {
+  const isDemoMode =
+    process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  const tryItOutHref = isDemoMode ? "/demo" : "/login";
+
   return (
     <section
       id="download"
@@ -25,7 +29,7 @@ export default function Hero({ onSeeHow }: HeroProps) {
       <div className="mt-10 flex justify-center gap-4">
         {/* Try It Out button styled like the previous Download button */}
         <Link
-          href="/demo"
+          href={tryItOutHref}
           className="px-8 py-4 bg-blue-600 text-white rounded-xl text-lg font-medium hover:bg-blue-700 transform hover:scale-105 transition duration-300"
         >
           Try It Out

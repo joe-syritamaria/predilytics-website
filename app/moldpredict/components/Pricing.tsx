@@ -1,9 +1,12 @@
+const isDemoMode =
+  process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+
 const pricingTiers = [
   {
     title: "Free",
     description: "Basic predictions and limited projects.",
     cta: "Get Started",
-    href: "https://predilyticsinc.com/login",
+    href: isDemoMode ? "/demo" : "/login",
   },
   {
     title: "Premium",
