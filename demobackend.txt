@@ -1,0 +1,47 @@
+import os
+import httpx
+from fastapi import HTTPException, Header
+
+SUPABASE_URL = os.environ["SUPABASE_URL"].rstrip("/")
+SUPABASE_ANON_KEY = os.environ["SUPABASE_ANON_KEY"]  # add this env var on Render
+
+async def require_supabase_user(authorization: str = Header(default=None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing bearer token.")
+    token = authorization.split(" ", 1)[1].strip()
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(
+                f"{SUPABASE_URL}/auth/v1/user",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "apikey": SUPABASE_ANON_KEY,
+                },
+            )
+    except httpx.RequestError:
+        raise HTTPException(status_code=503, detail="Auth service unavailable.")
+
+    if resp.status_code == 401:
+        raise HTTPException(status_code=401, detail="Invalid token.")
+    if resp.status_code != 200:
+        raise HTTPException(status_code=500, detail="Auth verification failed.")
+    return resp.json()
+
+async def consume_demo_prediction(user_id: str, max_per_day: int = 10):
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{SUPABASE_URL}/rest/v1/rpc/consume_demo_prediction",
+            headers={
+                "apikey": SUPABASE_SERVICE_ROLE_KEY,
+                "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={"p_user_id": user_id, "p_max_per_day": max_per_day},
+        )
+    if resp.status_code != 200:
+        raise HTTPException(status_code=500, detail="Usage check failed.")
+    result = resp.json()
+    if not result or not result[0]["allowed"]:
+        raise HTTPException(status_code=429, detail="Daily demo limit reached.")
+    return result[0]

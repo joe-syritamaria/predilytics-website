@@ -1,0 +1,235 @@
+from __future__ import annotations
+from .schemas.mold_prediction import MoldPredictionRequest, MoldPredictionResponse
+import json
+from dataclasses import dataclass
+from datetime import date, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Literal, Optional, Tuple
+from datetime import datetime
+import joblib
+from fastapi import APIRouter, Depends, HTTPException
+from app.auth import require_supabase_user
+from app.usage import consume_demo_credit
+
+router = APIRouter()
+
+# --------- CONFIG ---------
+import os, sys
+from pathlib import Path
+
+def runtime_base_dir() -> Path:
+    # Prefer Electron-provided base if present
+    env = os.environ.get("APP_BASE_DIR")
+    if env:
+        return Path(env)
+
+    # PyInstaller (onedir/onefile): base = folder containing the exe
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+
+    # Dev: api_models.py is backend/app/api_models.py -> backend/
+    return Path(__file__).resolve().parents[1]
+
+BASE_DIR = runtime_base_dir()
+
+def resolve_packaged_path(rel_path: str) -> Path:
+    """
+    Finds a relative path in:
+      1) BASE_DIR/<rel_path>
+      2) BASE_DIR/_internal/<rel_path>   (PyInstaller onedir often places datas here)
+    """
+    p1 = (BASE_DIR / rel_path).resolve()
+    if p1.exists():
+        return p1
+    p2 = (BASE_DIR / "_internal" / rel_path).resolve()
+    return p2
+
+REGISTRY_PATH = resolve_packaged_path("app/model_registry.json")
+
+
+
+# --------- Registry + Model loading ---------
+@dataclass(frozen=True)
+class ModelMeta:
+    id: str
+    name: str
+    type: Literal["xgb", "ngb"]
+    status: str
+    artifact_path: str
+
+
+def _read_registry() -> Tuple[str, List[ModelMeta]]:
+    # hard guards (prevents hangs on weird paths)
+    if not REGISTRY_PATH.exists():
+        raise RuntimeError(f"Missing registry file: {REGISTRY_PATH}")
+    if not REGISTRY_PATH.is_file():
+        raise RuntimeError(f"Registry path is not a file: {REGISTRY_PATH}")
+
+    txt = REGISTRY_PATH.read_text(encoding="utf-8")
+    data = json.loads(txt)
+
+    default_id = data.get("default_model_id")
+    models_raw = data.get("models", [])
+
+    models: List[ModelMeta] = [
+        ModelMeta(
+            id=m["id"],
+            name=m.get("name", m["id"]),
+            type=m["type"],
+            status=m.get("status", "stable"),
+            artifact_path=m["artifact_path"],
+        )
+        for m in models_raw
+    ]
+
+    if not default_id:
+        raise RuntimeError("Registry must include default_model_id")
+
+    return default_id, models
+
+
+# simple in-memory cache (per process)
+_MODEL_CACHE: Dict[str, Any] = {}
+
+
+def _get_model_meta(model_id: str) -> ModelMeta:
+    default_id, models = _read_registry()
+    for m in models:
+        if m.id == model_id:
+            return m
+    raise HTTPException(status_code=404, detail=f"Unknown model_id: {model_id}. Available default: {default_id}")
+
+
+def _load_model(model_id: str) -> Any:
+    if model_id in _MODEL_CACHE:
+        return _MODEL_CACHE[model_id]
+
+    meta = _get_model_meta(model_id)
+    artifact_abs = resolve_packaged_path(meta.artifact_path)
+
+    if not artifact_abs.exists():
+        raise HTTPException(status_code=500, detail=f"Model artifact missing on server: {artifact_abs}")
+    model = joblib.load(artifact_abs)
+    _MODEL_CACHE[model_id] = model
+    return model
+
+
+# --------- Feature building (YOU should align this with training) ---------
+def _build_features(req: MoldPredictionRequest) -> Dict[str, Any]:
+    """
+    IMPORTANT: this must match the exact feature engineering used in training.
+    If your training expects one-hot encoding, label encoding, etc., do it here.
+    For now: return a dict you can later convert as needed.
+    """
+    cycles_per_day = (
+        3600.0 * req.production.hours_per_day / req.production.cycle_time_seconds
+        if req.production.cycle_time_seconds
+        else 0.0
+    )
+    mold_age_days = (
+        req.production.total_cycles / cycles_per_day if cycles_per_day > 0 else 0.0
+    )
+    return {
+        "avg_cycle_time_seconds": req.production.cycle_time_seconds,
+        "avg_hours_per_day": req.production.hours_per_day,
+        "maintenance_interval_days": req.production.maintenance_interval_days,
+        "minor_repairs_in_period": req.production.minor_repairs_count,
+        "mold_age_days": mold_age_days,
+        "complexity": req.mold_details.complexity,
+        "size": req.mold_details.size,
+        "plastic_type": req.mold_details.plastic_type,
+        "side_actions": req.mold_details.side_actions,
+        "runner_type": req.mold_details.runner_type,
+    }
+
+
+def _predict_days(model: Any, meta: ModelMeta, features: Dict[str, Any]) -> float:
+    """
+    Adapt this to your real model input type.
+    - Many sklearn/XGBoost pipelines accept a pandas DataFrame.
+    - If you trained with a Pipeline, you can pass the dict as DataFrame with 1 row.
+    """
+    import pandas as pd
+
+    X = pd.DataFrame([features])
+
+    # common sklearn-ish interface:
+    if hasattr(model, "predict"):
+        y = model.predict(X)
+        # y might be array([value])
+        return float(y[0])
+
+    raise HTTPException(status_code=500, detail=f"Loaded model '{meta.id}' has no .predict() method.")
+
+
+def _validate_feature_compat(model: Any, features: Dict[str, Any], model_id: str) -> None:
+    """
+    Fail fast if the model's expected input feature list does not match.
+    Uses ColumnTransformer.feature_names_in_ when available.
+    """
+    pre = getattr(model, "named_steps", {}).get("pre")
+    expected = getattr(pre, "feature_names_in_", None)
+    if expected is None:
+        return
+
+    expected_set = set(map(str, expected))
+    provided_set = set(map(str, features.keys()))
+    if expected_set != provided_set:
+        missing = sorted(expected_set - provided_set)
+        extra = sorted(provided_set - expected_set)
+        detail = {
+            "model_id": model_id,
+            "missing_features": missing,
+            "extra_features": extra,
+        }
+        raise HTTPException(status_code=400, detail=detail)
+
+
+def _estimate_cost(days: float) -> float:
+    # placeholder logic — keep or replace with your real cost model
+    # e.g. $400 base + $120/day
+    return float(400 + 120 * max(days, 0))
+
+
+# --------- Routes ---------
+@router.get("/api/models")
+def list_models():
+    default_id, models = _read_registry()
+    return {
+        "default_model_id": default_id,
+        "models": [{"id": m.id, "name": m.name, "type": m.type, "status": m.status} for m in models],
+    }
+
+
+@router.post("/api/molds/predict", response_model=MoldPredictionResponse)
+async def predict(req: MoldPredictionRequest, user=Depends(require_supabase_user)):
+    usage = await consume_demo_credit(user["id"])
+    if not usage.get("allowed", False):
+        raise HTTPException(status_code=429, detail="Demo limit reached for today.")
+
+    default_id, _ = _read_registry()
+    model_id = (req.model_id or "").strip() or default_id
+
+    meta = _get_model_meta(model_id)
+    model = _load_model(model_id)
+
+    feats = _build_features(req)
+    _validate_feature_compat(model, feats, model_id)
+    days = float(_predict_days(model, meta, feats))
+
+    est_days_int = int(round(days))
+    repair_date = (date.today() + timedelta(days=est_days_int))
+    cost = _estimate_cost(days)
+
+    return MoldPredictionResponse(
+        model_id=model_id,  # treat as "model used"
+        mold_id=req.mold_id,
+        prediction_generated_at=datetime.utcnow(),
+
+        estimated_time_to_repair_days=est_days_int,
+        estimated_time_to_repair_months=days / 30.0,
+        estimated_time_to_repair_years=days / 365.0,
+
+        estimated_repair_date=repair_date,
+        estimated_repair_cost_usd=cost,
+    )
