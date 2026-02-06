@@ -4,7 +4,7 @@ import { getEnterpriseSupabase } from "@/lib/supabase/enterprise";
 
 export default async function BillingSuccessPage() {
   const previewMode = process.env.NEXT_PUBLIC_PREVIEW_MODE === "true";
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId && !previewMode) {
     redirect("/sign-in?redirect_url=/billing/success");
