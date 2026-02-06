@@ -13,12 +13,20 @@ export default function BillingCancelPage() {
           <p className="text-sm text-slate-700">
             If you still want Enterprise access, you can start checkout again from the pricing page.
           </p>
-          <a
-            href="/pricing"
-            className="mt-5 inline-flex items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition"
-          >
-            Back to pricing
-          </a>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="/pricing"
+              className="inline-flex items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition"
+            >
+              Back to pricing
+            </a>
+            <a
+              href="/"
+              className="inline-flex items-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+            >
+              Return to main website
+            </a>
+          </div>
         </section>
 
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
