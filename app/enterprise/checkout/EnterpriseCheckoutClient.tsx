@@ -61,7 +61,12 @@ export default function EnterpriseCheckoutClient() {
 
       const currency = (searchParams?.get("currency") || "").trim().toUpperCase();
 
-      const checkoutRes = await fetch(`${apiBase}/stripe/checkout`, {
+      const base = apiBase.replace(/\/$/, "");
+      const checkoutUrl = base.endsWith("/api")
+        ? `${base}/stripe/checkout`
+        : `${base}/api/stripe/checkout`;
+
+      const checkoutRes = await fetch(checkoutUrl, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
