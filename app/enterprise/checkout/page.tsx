@@ -1,8 +1,8 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 
 export const dynamic = "force-dynamic";
 
-const EnterpriseCheckoutClient = dynamic(() => import("./EnterpriseCheckoutClient"), {
+const EnterpriseCheckoutClient = dynamicImport(() => import("./EnterpriseCheckoutClient"), {
   ssr: false,
 });
 
