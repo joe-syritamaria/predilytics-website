@@ -57,7 +57,7 @@ export default function EnterpriseCheckoutPage() {
         return;
       }
 
-      const currency = (searchParams.get("currency") || "").trim().toUpperCase();
+      const currency = (searchParams?.get("currency") || "").trim().toUpperCase();
 
       const checkoutRes = await fetch(`${apiBase}/stripe/checkout`, {
         method: "POST",
