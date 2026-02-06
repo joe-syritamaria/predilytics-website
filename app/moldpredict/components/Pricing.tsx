@@ -9,6 +9,11 @@ const pricingTiers = [
     href: isDemoMode ? "/demo" : "/login",
   },
   {
+    title: "Premium",
+    description: "Advanced models, higher limits, and priority support.",
+    cta: "Coming Soon",
+  },
+  {
     title: "Enterprise",
     description: "Further trained models, and dedicated support.",
     cta: "View Enterprise Pricing",

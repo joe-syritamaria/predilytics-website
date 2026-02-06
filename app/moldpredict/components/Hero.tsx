@@ -41,7 +41,6 @@ export default function Hero({ onSeeHow }: HeroProps) {
         >
           Download
         </Link>
-
         {/* See How It Works button keeps secondary style */}
         <button
           onClick={onSeeHow} // trigger the HowItWorks modal
