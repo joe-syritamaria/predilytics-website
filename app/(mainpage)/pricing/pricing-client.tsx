@@ -117,7 +117,9 @@ export default function PricingClient() {
           </ul>
 
           <Link
-            href="/checkout"
+            href={`/sign-in?redirect_url=${encodeURIComponent(
+              `/enterprise/checkout?currency=${currency}`
+            )}`}
             className="mt-8 block w-full rounded-xl bg-white py-3 text-center text-sm font-semibold text-slate-900 hover:bg-slate-100 transition"
           >
             Upgrade to Enterprise (Coming Soon)

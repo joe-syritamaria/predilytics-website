@@ -35,6 +35,13 @@ export default function Hero({ onSeeHow }: HeroProps) {
           Try It Out
         </Link>
 
+        <Link
+          href="/moldpredict/downloads"
+          className="px-8 py-4 bg-white border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-blue-50 transform hover:scale-105 transition duration-300"
+        >
+          Download
+        </Link>
+
         {/* See How It Works button keeps secondary style */}
         <button
           onClick={onSeeHow} // trigger the HowItWorks modal
