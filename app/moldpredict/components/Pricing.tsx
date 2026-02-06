@@ -16,7 +16,8 @@ const pricingTiers = [
   {
     title: "Enterprise",
     description: "Further trained models, and dedicated support.",
-    cta: "Coming Soon",
+    cta: "View Enterprise Pricing",
+    href: "/pricing",
   },
 ];
 
@@ -31,7 +32,7 @@ export default function Pricing() {
           prediction requirements grow.
         </p>
 
-        <div className="mt-14 grid md:grid-cols-3 gap-8">
+        <div className="mt-14 grid md:grid-cols-2 gap-8">
           {pricingTiers.map((tier) => (
             <div
               key={tier.title}
