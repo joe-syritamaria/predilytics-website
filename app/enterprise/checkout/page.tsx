@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth, useClerk } from "@clerk/nextjs";
 
+export const dynamic = "force-dynamic";
+
 export default function EnterpriseCheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
