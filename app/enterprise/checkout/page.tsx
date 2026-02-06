@@ -1,5 +1,3 @@
-"use client";
-
 import EnterpriseCheckoutClient from "./EnterpriseCheckoutClient";
 
 export const dynamic = "force-dynamic";
