@@ -47,7 +47,12 @@ export function HomeSection() {
         }}
         className="w-full h-72 rounded-2xl bg-linear-to-br from-blue-50 to-white border border-blue-100 shadow-sm flex items-center justify-center text-gray-400 text-sm"
       >
-        Abstract analytics visualization/image
+                <img
+          src="/images/HeroImage.png"
+          alt="Hero illustration"
+          className="w-full h-full object-cover rounded-2xl"
+        />
+
       </motion.div>
     </motion.div>
   );

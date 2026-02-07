@@ -112,7 +112,7 @@ export default function PricingClient() {
             <li>• Manage multiple clients from a centralized workspace</li>
             <li>• Save predictions and view all mold forecasts</li>
             <li>• Monitor molds currently running today</li>
-            <li>• Local-first operation for maximum data security</li>
+            <li>• Strong data security with row-level controls and strict API boundaries</li>
             <li>• Data export and enterprise-grade configuration</li>
           </ul>
 
@@ -122,7 +122,7 @@ export default function PricingClient() {
             )}`}
             className="mt-8 block w-full rounded-xl bg-white py-3 text-center text-sm font-semibold text-slate-900 hover:bg-slate-100 transition"
           >
-            Upgrade to Enterprise (Coming Soon)
+            Upgrade to Enterprise Now!
           </Link>
         </div>
       </div>
