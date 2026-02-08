@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react"; 
+import { useState } from "react";
 import Hero from "./components/Hero";
 import ProblemSolution from "./components/ProblemSolution";
 import ProductOverview from "./components/ProductOverview";
@@ -12,18 +12,15 @@ export default function Home() {
   // State to show/hide the HowItWorks modal
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
-  console.log("showHowItWorks:", showHowItWorks); 
-
   return (
     <main className="bg-blue-50 text-gray-900 relative">
       {/* HERO */}
       <section id="hero">
         <Hero
-         onSeeHow={() => {
-          console.log("🔥 HERO BUTTON CLICKED");
-          setShowHowItWorks(true);
-      }}
-    />
+          onSeeHow={() => {
+            setShowHowItWorks(true);
+          }}
+        />
       </section>
 
       {/* PROBLEM / SOLUTION */}
@@ -47,7 +44,10 @@ export default function Home() {
       </section>
 
       {/* How It Works modal */}
-      {showHowItWorks && <HowItWorks onClose={() => setShowHowItWorks(false)} />}
+      {showHowItWorks && (
+        <HowItWorks onClose={() => setShowHowItWorks(false)} />
+      )}
+
     </main>
   );
 }

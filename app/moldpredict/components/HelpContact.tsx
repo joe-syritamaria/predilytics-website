@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AIChat from "./AIChat"; // Self-contained now
 
 export default function HelpContact() {
   return (
@@ -15,14 +16,21 @@ export default function HelpContact() {
 
         <div className="mt-12 grid md:grid-cols-3 gap-6">
           {/* AI Chat */}
-          <div className="bg-white border rounded-2xl p-6">
+          <div
+            className="bg-white border rounded-2xl p-6 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
+          >
             <h3 className="text-xl font-semibold text-blue-700">AI Assistant</h3>
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-gray-600 text-center">
               Get instant answers and guidance powered by AI.
             </p>
-            <button className="mt-6 w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
-              Coming Soon
-            </button>
+
+            <div className="mt-6 w-full">
+              <button
+                className="w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+              >
+                Chat Now
+              </button>
+            </div>
           </div>
 
           {/* Ticket */}
@@ -46,13 +54,15 @@ export default function HelpContact() {
               Schedule a call with our engineers for hands-on help.
             </p>
 
-            {/* Display phone number directly */}
             <div className="mt-6 w-full py-3 border border-blue-600 text-blue-600 rounded-xl">
               +1 (415) 907-0704
             </div>
           </div>
         </div>
       </div>
+
+      {/* 🔵 Floating AI Chat */}
+      <AIChat />
     </section>
   );
 }

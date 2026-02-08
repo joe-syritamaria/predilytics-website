@@ -7,6 +7,7 @@ import { IntroSequence } from "./components/IntroSequence";
 import { HomeSection } from "./components/HomeSection";
 import { ProductsSection } from "./components/ProductsSection";
 import { ContactSection } from "./components/ContactSection";
+import AIChat from "@/app/moldpredict/components/AIChat"; // Floating chat
 
 export default function PredilyticsPage() {
   const [showIntro, setShowIntro] = useState(true);
@@ -27,7 +28,7 @@ export default function PredilyticsPage() {
       </AnimatePresence>
 
       {/* Main content */}
-      <div className="bg-blue-50">
+      <div className="bg-blue-50 relative">
         <main className="mx-auto max-w-6xl px-6 py-16">
           <AnimatePresence mode="wait">
             <motion.div
@@ -52,6 +53,9 @@ export default function PredilyticsPage() {
             </motion.div>
           </AnimatePresence>
         </main>
+
+        {/* 🔵 Floating AI Chat (self-contained) */}
+        <AIChat triggerOpen={introComplete} />
       </div>
     </>
   );
