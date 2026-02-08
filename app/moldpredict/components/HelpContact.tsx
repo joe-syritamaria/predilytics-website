@@ -1,13 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import AIChat from "./AIChat"; // Make sure path is correct
+import AIChat from "./AIChat"; // Self-contained now
 
 export default function HelpContact() {
-  // State to control AI chat panel
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
   return (
     <section className="py-24 bg-blue-50">
       <div className="max-w-5xl mx-auto px-6 text-center">
@@ -22,7 +18,6 @@ export default function HelpContact() {
           {/* AI Chat */}
           <div
             className="bg-white border rounded-2xl p-6 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
-            onClick={() => setIsChatOpen(true)} // Open chat when card clicked
           >
             <h3 className="text-xl font-semibold text-blue-700">AI Assistant</h3>
             <p className="mt-3 text-gray-600 text-center">
@@ -30,7 +25,6 @@ export default function HelpContact() {
             </p>
 
             <div className="mt-6 w-full">
-              {/* Show a small prompt to click */}
               <button
                 className="w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
               >
@@ -67,8 +61,8 @@ export default function HelpContact() {
         </div>
       </div>
 
-      {/* AI Chat Component */}
-      <AIChat isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
+      {/* 🔵 Floating AI Chat */}
+      <AIChat />
     </section>
   );
 }
