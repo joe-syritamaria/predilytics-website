@@ -11,21 +11,20 @@ interface Message {
   showFeedback?: boolean;
 }
 
-interface AIChatProps {
-  triggerOpen?: boolean; // open automatically when true
-}
-
-export default function AIChat({ triggerOpen }: AIChatProps) {
+export default function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const messagesRef = useRef<HTMLDivElement>(null);
+  const hasInitializedRef = useRef(false);
 
-  // Open chat and add greeting when triggerOpen is true
+  /* 🔵 Listen for global "open-ai-chat" event */
   useEffect(() => {
-    if (triggerOpen && messages.length === 0) {
-      setTimeout(() => {
-        setIsOpen(true);
+    const openChat = () => {
+      setIsOpen(true);
+
+      if (!hasInitializedRef.current) {
+        hasInitializedRef.current = true;
         setMessages([
           {
             role: "assistant",
@@ -34,11 +33,14 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
             showFeedback: false,
           },
         ]);
-      }, 400); // delay slightly after intro
-    }
-  }, [triggerOpen, messages.length]);
+      }
+    };
 
-  // Auto-scroll
+    window.addEventListener("open-ai-chat", openChat);
+    return () => window.removeEventListener("open-ai-chat", openChat);
+  }, []);
+
+  /* 🔽 Auto-scroll on new messages */
   useEffect(() => {
     messagesRef.current?.scrollTo({
       top: messagesRef.current.scrollHeight,
@@ -53,26 +55,25 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
     setMessages(prev => [...prev, userMessage]);
     setInput("");
 
-    const typingMessage: Message = { role: "typing", content: "" };
-    setMessages(prev => [...prev, typingMessage]);
+    setMessages(prev => [...prev, { role: "typing", content: "" }]);
 
     const res = await fetch("/api/ai-chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: input }),
     });
+
     const data = await res.json();
 
     setTimeout(() => {
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: data.reply,
-        showFeedback: true,
-      };
       setMessages(prev =>
-        prev.filter(m => m.role !== "typing").concat(assistantMessage)
+        prev.filter(m => m.role !== "typing").concat({
+          role: "assistant",
+          content: data.reply,
+          showFeedback: true,
+        })
       );
-    }, 1200);
+    }, 900);
   };
 
   const handleFeedback = (helpful: boolean) => {
@@ -81,25 +82,29 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
 
   return (
     <AnimatePresence>
+      {/* 💬 Floating launcher */}
       {!isOpen && (
         <motion.button
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
-          onClick={() => setIsOpen(true)}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          onClick={() =>
+            window.dispatchEvent(new Event("open-ai-chat"))
+          }
           className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition"
         >
           💬
         </motion.button>
       )}
 
+      {/* 🧠 Chat panel */}
       {isOpen && (
         <motion.div
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className="fixed bottom-6 right-6 w-80 bg-white border rounded-xl shadow-lg flex flex-col z-50"
         >
           {/* Header */}
@@ -173,7 +178,7 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
   );
 }
 
-/* 🔵 Three-dot typing animation */
+/* 🔵 Typing dots */
 function TypingBubble() {
   return (
     <div className="bg-gray-100 px-3 py-2 rounded-lg w-fit">
