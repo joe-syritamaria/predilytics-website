@@ -1038,6 +1038,25 @@ export default function DemoClient() {
                 ) : null}
               </div>
             </div>
+            <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-900">
+                Want full access and more features?
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Download the MoldPredict Desktop App to unlock full analytics, manage multiple clients from a centralized workspace
+                historical tracking of mold forecasts, and production-grade predictions.
+              </p>
+
+              <a
+                href="https://predilyticsinc.com/moldpredict/downloads"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-blue-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800"
+              >
+                Download now!
+              </a>
+            </div>
+
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-900">

@@ -25,11 +25,14 @@ export default function HelpContact() {
             </p>
 
             <div className="mt-6 w-full">
-              <button
-                className="w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
-              >
-                Chat Now
-              </button>
+            <button
+              onClick={() => {
+                window.dispatchEvent(new Event("open-ai-chat"));
+              }}
+              className="w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+            >
+              Chat Now
+            </button>
             </div>
           </div>
 
