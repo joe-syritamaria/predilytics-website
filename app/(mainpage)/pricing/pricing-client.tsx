@@ -17,7 +17,6 @@ type Currency = keyof typeof CURRENCIES;
 /* -------------------- Pricing -------------------- */
 
 const BASE_PRICE_USD = 2399;
-const DISCOUNT_USD = 500;
 
 /* -------------------- Component -------------------- */
 
@@ -25,11 +24,7 @@ export default function PricingClient() {
   const [currency, setCurrency] = useState<Currency>("USD");
 
   const { symbol, rate } = CURRENCIES[currency];
-
-  const originalPrice = Math.round(BASE_PRICE_USD * rate);
-  const discountedPrice = Math.round(
-    (BASE_PRICE_USD - DISCOUNT_USD) * rate
-  );
+  const price = Math.round(BASE_PRICE_USD * rate);
 
   return (
     <>
@@ -83,28 +78,15 @@ export default function PricingClient() {
         </div>
 
         {/* Enterprise Plan */}
-        <div className="relative rounded-2xl bg-slate-900 p-8 shadow-lg">
-          <div className="absolute -top-4 right-6 rounded-full bg-emerald-500 px-4 py-1 text-xs font-semibold text-white">
-            Pre-Launch Discount
-          </div>
-
+        <div className="rounded-2xl bg-slate-900 p-8 shadow-lg">
           <h2 className="text-xl font-semibold text-white">Enterprise</h2>
           <p className="mt-2 text-sm text-slate-300">
             Secure, local-first predictive modeling for production environments.
           </p>
 
-          <div className="mt-6 flex items-end gap-3">
-            <span className="text-4xl font-semibold text-white">
-              {symbol}
-              {discountedPrice}
-            </span>
-            <div className="text-sm text-slate-400">
-              <div className="line-through">
-                {symbol}
-                {originalPrice}
-              </div>
-              <div>/ year</div>
-            </div>
+          <div className="mt-6 text-4xl font-semibold text-white">
+            {symbol}
+            {price} / year
           </div>
 
           <ul className="mt-8 space-y-3 text-sm text-slate-200">
