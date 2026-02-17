@@ -47,7 +47,11 @@ export default function MagicPage() {
           setError("Sign-in could not be completed.");
         }
       } catch (e) {
-        setError(String(e?.message || e));
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError(String(e));
+        }
       }
     })();
 
@@ -84,7 +88,11 @@ export default function MagicPage() {
           appToken
         )}`;
       } catch (e) {
-        setError(String(e?.message || e));
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError(String(e));
+        }
       }
     })();
 
