@@ -14,7 +14,7 @@ function getApiBase() {
 
 export default function MagicPage() {
   const params = useSearchParams();
-  const ticket = params.get("token");
+  const ticket = params?.get("token") ?? null;
   const { isLoaded: signInLoaded, signIn, setActive } = useSignIn();
   const { isLoaded: authLoaded, isSignedIn, getToken } = useAuth();
   const [status, setStatus] = useState("Initializing...");
@@ -96,7 +96,7 @@ export default function MagicPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 text-gray-900">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow">
-        <div className="text-lg font-semibold">Signing you in…</div>
+        <div className="text-lg font-semibold">Signing you in...</div>
         <div className="mt-2 text-sm text-gray-600">{status}</div>
         {error && (
           <div className="mt-4 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
