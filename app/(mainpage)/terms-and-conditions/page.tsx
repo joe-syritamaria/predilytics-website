@@ -6,14 +6,14 @@ export default function TermsOfServicePage() {
         <a
           href="/termsofservice/Terms of Service.pdf"
           download
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 transition"
+          className="rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-4 py-2 text-xs font-medium text-gray-700 hover:bg-[rgb(var(--input))] transition"
         >
           Download Full Terms of Service (PDF)
         </a>
       </div>
 
         {/* TERMS CONTENT */}
-        <section className="text-[11px] leading-tight text-neutral-800">
+        <section className="text-[11px] leading-tight text-[rgb(var(--foreground))]">
           <h1 className="mb-2 text-sm font-semibold uppercase tracking-wide">
             Predilytics Inc. Terms of Service
           </h1>
@@ -176,7 +176,7 @@ export default function TermsOfServicePage() {
           </p>
 
           {/* SUMMARY NOTICE */}
-          <div className="mt-12 border-t border-neutral-300 pt-4 text-[10px] text-neutral-500">
+          <div className="mt-12 border-t border-[rgb(var(--border))] pt-4 text-[10px] text-neutral-500">
             This Terms of Service page is provided for convenience and
             readability. The full, legally binding version of the Terms of
             Service is available for download and shall control in the event of
@@ -186,3 +186,4 @@ export default function TermsOfServicePage() {
     </main>
   );
 }
+

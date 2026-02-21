@@ -6,7 +6,7 @@ import Image from "next/image";
 export function ProductsSection() {
   return (
     <section>
-      <h2 className="text-3xl font-semibold text-gray-900 mb-10">
+      <h2 className="text-3xl font-semibold text-[rgb(var(--foreground))] mb-10">
         Products
       </h2>
 
@@ -19,9 +19,9 @@ export function ProductsSection() {
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
         className="group block"
       >
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-shadow">
+        <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] shadow-sm hover:shadow-lg transition-shadow">
           {/* subtle gradient accent */}
-          <div className="absolute inset-0 bg-linear-to-r from-blue-50 via-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-linear-to-r from-[rgb(var(--input))] via-[rgb(var(--card))] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
           <div className="relative flex items-center gap-8 p-8 md:p-10">
             {/* Logo */}
@@ -39,7 +39,7 @@ export function ProductsSection() {
             {/* Content */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-2xl font-semibold text-gray-900">
+                <h3 className="text-2xl font-semibold text-[rgb(var(--foreground))]">
                   MoldPredict
                 </h3>
                 <span className="text-xs font-medium text-gray-500">
@@ -65,3 +65,4 @@ export function ProductsSection() {
     </section>
   );
 }
+

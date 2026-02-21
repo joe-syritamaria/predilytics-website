@@ -2,9 +2,9 @@ import Image from "next/image";
 
 export default function ProductOverview() {
   return (
-    <section className="py-24 bg-blue-50">
+    <section className="py-24 bg-[rgb(var(--background))]">
       <div className="max-w-6xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-blue-700">
+        <h2 className="text-4xl font-bold text-blue-700 dark:text-white">
           About MoldPredict™
         </h2>
 
@@ -16,7 +16,7 @@ export default function ProductOverview() {
         </p>
 
         {/* Image Placeholder */}
-        <div className="mt-12 relative w-full max-w-4xl mx-auto aspect-video bg-white border rounded-2xl overflow-hidden flex items-center justify-center">
+        <div className="mt-12 relative w-full max-w-4xl mx-auto aspect-video bg-[rgb(var(--card))] border rounded-2xl overflow-hidden flex items-center justify-center">
           <Image
             src="/images/AboutMoldPredict.png"
             alt="About MoldPredict"
@@ -28,3 +28,5 @@ export default function ProductOverview() {
     </section>
   );
 }
+
+

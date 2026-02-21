@@ -14,9 +14,9 @@ export default function Hero({ onSeeHow }: HeroProps) {
       id="download"
       className="max-w-7xl mx-auto px-6 py-28 text-center"
     >
-      <h1 className="text-5xl md:text-6xl font-bold text-blue-700 leading-tight">
+      <h1 className="text-5xl md:text-6xl font-bold leading-tight">
         Manage Mold Repair
-        <span className="block text-blue-600">
+        <span className="block">
           before they even happen!
         </span>
       </h1>
@@ -37,7 +37,7 @@ export default function Hero({ onSeeHow }: HeroProps) {
 
         <Link
           href="/moldpredict/downloads"
-          className="px-8 py-4 bg-white border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-blue-50 transform hover:scale-105 transition duration-300"
+          className="px-8 py-4 bg-[rgb(var(--card))] border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-[rgb(var(--input))] transform hover:scale-105 transition duration-300"
         >
           Download
         </Link>
@@ -52,3 +52,5 @@ export default function Hero({ onSeeHow }: HeroProps) {
     </section>
   );
 }
+
+

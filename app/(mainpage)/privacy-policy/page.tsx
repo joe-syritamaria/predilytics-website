@@ -1,12 +1,12 @@
 export default function PrivacyPolicyPage() {
   return (
-    <div className="relative mx-auto max-w-5xl px-6 py-12">
+    <div className="relative mx-auto max-w-5xl px-6 py-12 text-gray-900 dark:text-gray-200">
       {/* Side download button */}
       <div className="sticky top-24 float-right ml-8 hidden md:block">
         <a
           href="/privacypolicy/privacy-policy.pdf"
           download
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 transition"
+          className="rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-4 py-2 text-xs font-medium text-gray-700 hover:bg-[rgb(var(--input))] transition"
         >
           Download Full Privacy Policy (PDF)
         </a>
@@ -17,13 +17,13 @@ export default function PrivacyPolicyPage() {
         <h1 className="text-lg font-semibold tracking-tight">
           Predilytics Inc. Privacy Policy
         </h1>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
           Last Updated: Jan 24, 2026
         </p>
       </header>
 
       {/* Policy body */}
-      <div className="space-y-3 text-[11px] leading-tight text-gray-800">
+      <div className="space-y-3 text-[11px] leading-tight text-gray-800 dark:text-gray-200">
         <p>
           This Privacy Policy (“Privacy Policy”) describes the practices of
           Predilytics Inc. (“we,” “us,” “our”) with respect to the Personal
@@ -227,14 +227,14 @@ export default function PrivacyPolicyPage() {
       </div>
 
       {/* Bottom notice */}
-      <footer className="mt-10 border-t pt-4 text-[10px] text-gray-500">
+      <footer className="mt-12 border-t border-[rgb(var(--border))] pt-4 text-[10px] text-neutral-500">
         This Privacy Policy is provided for convenience and readability. The
         legally binding and complete version of this Privacy Policy is available
-        in PDF format.{' '}
+        in PDF format.{" "}
         <a
           href="/privacypolicy/privacy-policy.pdf"
           download
-          className="underline hover:text-gray-700"
+          className="underline hover:opacity-80"
         >
           Download the full legal version here.
         </a>
@@ -242,3 +242,4 @@ export default function PrivacyPolicyPage() {
     </div>
   );
 }
+

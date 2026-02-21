@@ -28,7 +28,7 @@ export default function PredilyticsPage() {
       </AnimatePresence>
 
       {/* Main content */}
-      <div className="bg-blue-50 relative">
+      <div className="bg-[rgb(var(--background))] relative">
         <main className="mx-auto max-w-6xl px-6 py-16">
           <AnimatePresence mode="wait">
             <motion.div
@@ -60,3 +60,4 @@ export default function PredilyticsPage() {
     </>
   );
 }
+

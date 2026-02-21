@@ -1,8 +1,8 @@
 export default function navbar() {
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
+    <header className="sticky top-0 z-50 bg-[rgb(var(--card))]/80 backdrop-blur border-b">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="text-xl font-semibold text-blue-700">
+        <div className="text-xl font-semibold text-blue-700 dark:text-white">
           MoldPredict™
         </div>
 
@@ -28,3 +28,5 @@ export default function navbar() {
     </header>
   );
 }
+
+

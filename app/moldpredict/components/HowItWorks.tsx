@@ -31,17 +31,17 @@ const screens: Screen[] = [
 
 export default function HowItWorks({ onClose }: HowItWorksProps) {
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start overflow-y-auto py-20">
-      <div className="bg-blue-50 rounded-3xl max-w-4xl w-full mx-4 p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 bg-black/60 flex justify-center items-start overflow-y-auto py-20">
+      <div className="bg-[rgb(var(--card))] border border-[rgb(var(--border))] rounded-3xl max-w-4xl w-full mx-4 p-8 shadow-2xl">
         {/* Header */}
         <div className="flex justify-center items-center mb-12 relative">
-          <h1 className="text-4xl font-bold text-blue-700 text-center w-full">
+          <h1 className="text-4xl font-bold text-blue-700 dark:text-white text-center w-full">
             How MoldPredict™ Works
           </h1>
 
           <button
             onClick={onClose}
-            className="absolute top-0 right-0 text-gray-500 hover:text-blue-600 text-lg"
+            className="absolute top-0 right-0 text-[rgb(var(--foreground))]/70 hover:text-blue-500 text-lg"
           >
             ✕
           </button>
@@ -59,7 +59,7 @@ export default function HowItWorks({ onClose }: HowItWorksProps) {
           >
             {/* Title & Text */}
             <div className="text-center max-w-2xl">
-              <h2 className="text-3xl font-semibold text-blue-700 mb-4">
+              <h2 className="text-3xl font-semibold text-blue-700 dark:text-white mb-4">
                 {screen.title}
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
@@ -108,3 +108,4 @@ export default function HowItWorks({ onClose }: HowItWorksProps) {
     </div>
   );
 }
+

@@ -33,7 +33,7 @@ export default function PricingClient() {
         <select
           value={currency}
           onChange={(e) => setCurrency(e.target.value as Currency)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-sm"
         >
           {Object.entries(CURRENCIES).map(([key, value]) => (
             <option key={key} value={key}>
@@ -52,13 +52,13 @@ export default function PricingClient() {
       {/* Pricing Cards */}
       <div className="mt-14 grid gap-8 md:grid-cols-2">
         {/* Free Plan */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900">Free</h2>
+        <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-8">
+          <h2 className="text-xl font-semibold text-[rgb(var(--foreground))]">Free</h2>
           <p className="mt-2 text-sm text-slate-600">
             Risk-based insights and reporting.
           </p>
 
-          <div className="mt-6 text-4xl font-semibold text-slate-900">
+          <div className="mt-6 text-4xl font-semibold text-[rgb(var(--foreground))]">
             $0
           </div>
 
@@ -71,25 +71,25 @@ export default function PricingClient() {
 
           <Link
             href="/demo"
-            className="mt-8 block w-full rounded-xl border border-slate-300 py-3 text-center text-sm font-medium text-slate-900 hover:bg-slate-50 transition"
+            className="mt-8 block w-full rounded-xl border border-[rgb(var(--border))] py-3 text-center text-sm font-medium text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] transition"
           >
             Get Started Free
           </Link>
         </div>
 
         {/* Enterprise Plan */}
-        <div className="rounded-2xl bg-slate-900 p-8 shadow-lg">
-          <h2 className="text-xl font-semibold text-white">Enterprise</h2>
-          <p className="mt-2 text-sm text-slate-300">
+        <div className="scale-105 rounded-2xl border-2 border-blue-500 dark:border-white/90 bg-[rgb(var(--card))] p-8 shadow-[0_0_30px_rgba(59,130,246,0.28)] dark:shadow-[0_0_30px_rgba(255,255,255,0.16)]">
+          <h2 className="text-xl font-semibold text-blue-700 dark:text-white">Enterprise</h2>
+          <p className="mt-2 text-sm text-slate-600">
             Secure, local-first predictive modeling for production environments.
           </p>
 
-          <div className="mt-6 text-4xl font-semibold text-white">
+          <div className="mt-6 text-4xl font-semibold text-[rgb(var(--foreground))]">
             {symbol}
             {price} / year
           </div>
 
-          <ul className="mt-8 space-y-3 text-sm text-slate-200">
+          <ul className="mt-8 space-y-3 text-sm text-slate-700">
             <li>• Full predictive modeling on customer-owned local data</li>
             <li>• Manage multiple clients from a centralized workspace</li>
             <li>• Save predictions and view all mold forecasts</li>
@@ -102,7 +102,7 @@ export default function PricingClient() {
             href={`/sign-in?redirect_url=${encodeURIComponent(
               `/enterprise/checkout?currency=${currency}`
             )}`}
-            className="mt-8 block w-full rounded-xl bg-white py-3 text-center text-sm font-semibold text-slate-900 hover:bg-slate-100 transition"
+            className="mt-8 block w-full rounded-xl bg-[rgb(var(--card))] py-3 text-center text-sm font-semibold text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] transition"
           >
             Upgrade to Enterprise Now!
           </Link>
@@ -111,3 +111,6 @@ export default function PricingClient() {
     </>
   );
 }
+
+
+

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import DarkModeToggle from "@/app/(mainpage)/components/DarkModeToggle";
 
 type MenuKey = "products" | "resources" | null;
 
@@ -46,7 +47,7 @@ export default function MarketingHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-blue-100 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[rgb(var(--border))] bg-[rgb(var(--card))]/90 backdrop-blur">
       <div ref={headerRef} className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
@@ -55,7 +56,7 @@ export default function MarketingHeader() {
           Predilytics
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
+        <nav className="hidden items-center gap-6 text-sm font-medium text-[rgb(var(--foreground))]/85 md:flex">
           <div className="relative">
             <button
               type="button"
@@ -69,7 +70,7 @@ export default function MarketingHeader() {
                   toggleMenu("products");
                 }
               }}
-              className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-[rgb(var(--background))] hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
             >
               Products
               <span className="text-xs">v</span>
@@ -78,12 +79,12 @@ export default function MarketingHeader() {
               <div
                 id="products-menu"
                 role="menu"
-                className="absolute left-0 mt-2 w-56 rounded-xl border border-blue-100 bg-white p-2 shadow-lg"
+                className="absolute left-0 mt-2 w-56 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-2 shadow-lg"
               >
                 <Link
                   href="/moldpredict"
                   role="menuitem"
-                  className="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   MoldPredict
@@ -105,7 +106,7 @@ export default function MarketingHeader() {
                   toggleMenu("resources");
                 }
               }}
-              className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-[rgb(var(--background))] hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
             >
               Resources
               <span className="text-xs">v</span>
@@ -114,12 +115,12 @@ export default function MarketingHeader() {
               <div
                 id="resources-menu"
                 role="menu"
-                className="absolute left-0 mt-2 w-60 rounded-xl border border-blue-100 bg-white p-2 shadow-lg"
+                className="absolute left-0 mt-2 w-60 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-2 shadow-lg"
               >
                 <Link
                   href="/moldpredict/ticket"
                   role="menuitem"
-                  className="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   Support
@@ -127,7 +128,7 @@ export default function MarketingHeader() {
                 <Link
                   href="/tutorials"
                   role="menuitem"
-                  className="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   Tutorials
@@ -135,7 +136,7 @@ export default function MarketingHeader() {
                 <Link
                   href="/whitepapers"
                   role="menuitem"
-                  className="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   White Papers
@@ -146,32 +147,35 @@ export default function MarketingHeader() {
 
           <Link
             href="/pricing"
-            className="rounded-full px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
+            className="rounded-full px-3 py-2 transition hover:bg-[rgb(var(--background))] hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
           >
             Pricing
           </Link>
         </nav>
 
-        <button
-          type="button"
-          aria-label="Toggle navigation menu"
-          aria-expanded={mobileOpen}
-          aria-controls="marketing-mobile-nav"
-          onClick={() => setMobileOpen((current) => !current)}
-          className="rounded-full border border-blue-100 px-3 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300 md:hidden"
-        >
-          Menu
-        </button>
+        <div className="flex items-center gap-3">
+          <DarkModeToggle />
+          <button
+            type="button"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileOpen}
+            aria-controls="marketing-mobile-nav"
+            onClick={() => setMobileOpen((current) => !current)}
+            className="rounded-full border border-[rgb(var(--border))] px-3 py-2 text-sm font-semibold text-blue-700 transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300 md:hidden"
+          >
+            Menu
+          </button>
+        </div>
       </div>
 
       {mobileOpen && (
-        <div id="marketing-mobile-nav" className="border-t border-blue-100 bg-white px-6 py-4 md:hidden">
-          <div className="space-y-3 text-sm font-medium text-slate-700">
+        <div id="marketing-mobile-nav" className="border-t border-[rgb(var(--border))] bg-[rgb(var(--card))] px-6 py-4 md:hidden">
+          <div className="space-y-3 text-sm font-medium text-[rgb(var(--foreground))]/90">
             <button
               type="button"
               aria-expanded={mobileSection === "products"}
               onClick={() => toggleMobileSection("products")}
-              className="flex w-full items-center justify-between rounded-lg border border-blue-100 px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="flex w-full items-center justify-between rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-blue-300"
             >
               Products
               <span className="text-xs">v</span>
@@ -180,7 +184,7 @@ export default function MarketingHeader() {
               <div className="ml-3 space-y-2">
                 <Link
                   href="/moldpredict"
-                  className="block rounded-lg px-3 py-2 text-slate-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   MoldPredict
@@ -192,7 +196,7 @@ export default function MarketingHeader() {
               type="button"
               aria-expanded={mobileSection === "resources"}
               onClick={() => toggleMobileSection("resources")}
-              className="flex w-full items-center justify-between rounded-lg border border-blue-100 px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="flex w-full items-center justify-between rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-blue-300"
             >
               Resources
               <span className="text-xs">v</span>
@@ -201,21 +205,21 @@ export default function MarketingHeader() {
               <div className="ml-3 space-y-2">
                 <Link
                   href="/moldpredict/ticket"
-                  className="block rounded-lg px-3 py-2 text-slate-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   Support
                 </Link>
                 <Link
                   href="/tutorials"
-                  className="block rounded-lg px-3 py-2 text-slate-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   Tutorials
                 </Link>
                 <Link
                   href="/whitepapers"
-                  className="block rounded-lg px-3 py-2 text-slate-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   White Papers
@@ -225,7 +229,7 @@ export default function MarketingHeader() {
 
             <Link
               href="/pricing"
-              className="block rounded-lg border border-blue-100 px-3 py-2 text-slate-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="block rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
               onClick={closeMenus}
             >
               Pricing
@@ -236,3 +240,4 @@ export default function MarketingHeader() {
     </header>
   );
 }
+

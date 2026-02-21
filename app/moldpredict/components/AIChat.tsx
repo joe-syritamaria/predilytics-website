@@ -100,10 +100,10 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
-          className="fixed bottom-6 right-6 w-80 bg-white border rounded-xl shadow-lg flex flex-col z-50"
+          className="fixed bottom-6 right-6 w-80 bg-[rgb(var(--card))] border rounded-xl shadow-lg flex flex-col z-50"
         >
           {/* Header */}
-          <div className="p-3 border-b font-semibold text-blue-700 flex justify-between">
+          <div className="p-3 border-b font-semibold flex justify-between">
             Moth AI
             <button onClick={() => setIsOpen(false)}>✕</button>
           </div>
@@ -120,7 +120,7 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
                 <div key={i}>
                   {m.role === "assistant" ? (
                     <div
-                      className="p-2 rounded-lg text-sm bg-gray-100 text-gray-900"
+                      className="p-2 rounded-lg text-sm bg-[rgb(var(--input))] text-[rgb(var(--foreground))]"
                       dangerouslySetInnerHTML={{ __html: m.content }}
                     />
                   ) : (
@@ -176,7 +176,7 @@ export default function AIChat({ triggerOpen }: AIChatProps) {
 /* 🔵 Three-dot typing animation */
 function TypingBubble() {
   return (
-    <div className="bg-gray-100 px-3 py-2 rounded-lg w-fit">
+    <div className="bg-[rgb(var(--input))] px-3 py-2 rounded-lg w-fit">
       <div className="flex gap-1">
         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -185,3 +185,4 @@ function TypingBubble() {
     </div>
   );
 }
+

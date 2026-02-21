@@ -34,7 +34,7 @@ export default function WhitepapersPage() {
     <section className="mx-auto w-full max-w-6xl px-6 py-16 space-y-12">
       {/* Page Header */}
       <div className="max-w-3xl">
-        <h1 className="text-4xl font-semibold text-slate-900">White Papers</h1>
+        <h1 className="text-4xl font-semibold text-[rgb(var(--foreground))]">White Papers</h1>
         <p className="mt-4 text-lg text-slate-600">
           Technical research and applied insights from Predilytics on predictive analytics, reliability modeling, and event forecasting.
         </p>
@@ -45,12 +45,12 @@ export default function WhitepapersPage() {
         {products.map((product) => (
           <div
             key={product.id}
-            className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+            className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] shadow-sm overflow-hidden"
           >
             {/* Panel Header */}
             <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-slate-900">{product.name}</h2>
+                <h2 className="text-2xl font-semibold text-[rgb(var(--foreground))]">{product.name}</h2>
                 <p className="mt-2 text-slate-600">{product.description}</p>
                 {product.isAvailable && <p className="mt-2 text-sm text-slate-500">PDF • Technical White Paper</p>}
               </div>
@@ -61,7 +61,7 @@ export default function WhitepapersPage() {
                   <>
                     <button
                       onClick={() => togglePdf(product.id)}
-                      className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
+                      className="inline-flex items-center justify-center rounded-lg border border-[rgb(var(--border))] px-4 py-2 text-sm font-medium text-slate-700 hover:bg-[rgb(var(--input))] transition"
                     >
                       {openPdfIds.includes(product.id) ? "Hide PDF" : "View PDF"}
                     </button>
@@ -82,7 +82,7 @@ export default function WhitepapersPage() {
 
             {/* PDF Viewer Inline */}
             {product.isAvailable && product.pdf && openPdfIds.includes(product.id) && (
-              <div className="h-[700px] w-full overflow-hidden border-t border-slate-200">
+              <div className="h-[700px] w-full overflow-hidden border-t border-[rgb(var(--border))]">
                 <iframe
                   src={product.pdf}
                   className="h-full w-full"
@@ -96,3 +96,4 @@ export default function WhitepapersPage() {
     </section>
   );
 }
+
