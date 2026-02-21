@@ -32,7 +32,7 @@ export default function AboutPage() {
     <section className="mx-auto w-full max-w-6xl px-6 py-16 space-y-16">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-slate-900">About Predilytics</h1>
+        <h1 className="text-4xl font-bold text-[rgb(var(--foreground))]">About Predilytics</h1>
         <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
           Predilytics is building predictive intelligence for modern
           manufacturing—helping teams move from reactive decisions to proactive outcomes.
@@ -41,14 +41,14 @@ export default function AboutPage() {
 
       {/* Vision & Mission */}
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
+        <div className="bg-[rgb(var(--card))] p-8 rounded-2xl shadow hover:shadow-lg transition">
           <h2 className="text-2xl font-semibold text-blue-700 mb-3">Our Vision</h2>
           <p className="text-slate-600 leading-relaxed">
             To become the intelligence layer manufacturers rely on to anticipate risk,
             optimize operations, and build resilient systems.
           </p>
         </div>
-        <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
+        <div className="bg-[rgb(var(--card))] p-8 rounded-2xl shadow hover:shadow-lg transition">
           <h2 className="text-2xl font-semibold text-blue-700 mb-3">Our Mission</h2>
           <p className="text-slate-600 leading-relaxed">
             We transform complex operational data into clear, actionable predictions—
@@ -59,7 +59,7 @@ export default function AboutPage() {
 
       {/* Outcomes */}
       <div>
-        <h2 className="text-3xl font-semibold text-slate-900 text-center mb-8">
+        <h2 className="text-3xl font-semibold text-[rgb(var(--foreground))] text-center mb-8">
           Outcomes We Deliver
         </h2>
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -71,7 +71,7 @@ export default function AboutPage() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="bg-blue-50 rounded-xl p-6 text-slate-700 font-medium hover:bg-blue-100 transition"
+              className="rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 text-slate-700 font-medium hover:bg-[rgb(var(--input))] transition"
             >
               {item}
             </div>
@@ -80,7 +80,7 @@ export default function AboutPage() {
       </div>
 {/* Founders */}
 <div>
-  <h2 className="text-3xl font-semibold text-slate-900 text-center mb-10">
+  <h2 className="text-3xl font-semibold text-[rgb(var(--foreground))] text-center mb-10">
     Meet the Founders
   </h2>
 
@@ -88,7 +88,7 @@ export default function AboutPage() {
     {founders.map((founder, idx) => (
       <div
         key={idx}
-        className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6 text-center"
+        className="bg-[rgb(var(--card))] rounded-2xl shadow hover:shadow-lg transition p-6 text-center"
       >
         <img
           src={founder.photo}
@@ -96,7 +96,7 @@ export default function AboutPage() {
           className="w-32 h-32 mx-auto rounded-full object-cover mb-4"
         />
 
-        <h3 className="text-lg font-semibold text-slate-900">
+        <h3 className="text-lg font-semibold text-[rgb(var(--foreground))]">
           {founder.name}
         </h3>
 
@@ -121,3 +121,4 @@ export default function AboutPage() {
     </section>
   );
 }
+

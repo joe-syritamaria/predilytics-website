@@ -7,16 +7,16 @@ export default function MoldPredictDownloadsPage() {
   const linuxUrl = downloadsBase ? `${downloadsBase}/Predilytics-Enterprise.AppImage` : "#";
 
   return (
-    <div className="min-h-screen bg-blue-50 px-6 py-12 text-slate-900">
+    <div className="min-h-screen bg-[rgb(var(--background))] px-6 py-12 text-[rgb(var(--foreground))]">
       <div className="mx-auto w-full max-w-4xl space-y-10">
         <header className="space-y-3">
-          <h1 className="text-3xl font-semibold">Predilytics Enterprise Downloads</h1>
+          <h1 className="text-3xl font-semibold">MoldPredict Enterprise Downloads</h1>
           <p className="text-slate-600">
             Download the desktop app and follow the setup steps below.
           </p>
         </header>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm">
           <h2 className="text-xl font-semibold">Downloads</h2>
           <p className="mt-2 text-sm text-slate-600">
             Choose the installer for your operating system.
@@ -24,19 +24,19 @@ export default function MoldPredictDownloadsPage() {
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <a
               href={windowsUrl}
-              className="rounded-xl border border-slate-200 bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800 transition"
+              className="rounded-xl border border-[rgb(var(--border))] bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800 transition"
             >
               Windows (.exe)
             </a>
             <a
               href={macUrl}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+              className="rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-4 py-3 text-center text-sm font-semibold text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] transition"
             >
               macOS (.dmg)
             </a>
             <a
               href={linuxUrl}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+              className="rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-4 py-3 text-center text-sm font-semibold text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] transition"
             >
               Linux (.AppImage)
             </a>
@@ -48,7 +48,7 @@ export default function MoldPredictDownloadsPage() {
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm">
           <h2 className="text-xl font-semibold">Install Steps</h2>
           <div className="mt-4 space-y-4 text-sm text-slate-700">
             <p>1. Download the installer for your operating system.</p>
@@ -58,14 +58,14 @@ export default function MoldPredictDownloadsPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm">
           <h2 className="text-xl font-semibold">Need help?</h2>
           <p className="mt-2 text-sm text-slate-600">
             If you run into any issues, contact support and include your organization name.
           </p>
           <a
             href="/support"
-            className="mt-4 inline-flex items-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50 transition"
+            className="mt-4 inline-flex items-center rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-sm font-medium text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] transition"
           >
             Contact Support
           </a>
@@ -74,3 +74,4 @@ export default function MoldPredictDownloadsPage() {
     </div>
   );
 }
+

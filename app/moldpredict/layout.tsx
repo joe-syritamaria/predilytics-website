@@ -7,7 +7,7 @@ export default function MoldPredictLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-blue-50 text-gray-900">
+    <div className="min-h-screen bg-[rgb(var(--background))] text-[rgb(var(--foreground))]">
       <Sidebar />
       <div className="flex min-h-screen flex-col md:ml-64">
         <main className="flex-1 pt-16 md:pt-0">{children}</main>
@@ -16,3 +16,4 @@ export default function MoldPredictLayout({
     </div>
   );
 }
+

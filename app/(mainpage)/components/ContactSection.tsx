@@ -19,9 +19,9 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="bg-blue-50 py-16">
+    <section id="contact" className="bg-[rgb(var(--background))] py-16">
       <div className="mx-auto w-full max-w-6xl px-4">
-        <h2 className="text-4xl font-semibold text-slate-900">
+        <h2 className="text-4xl font-semibold text-[rgb(var(--foreground))]">
           Contact Us
         </h2>
         <p className="mt-3 text-base text-slate-600">
@@ -31,7 +31,7 @@ export function ContactSection() {
         <div className="mt-10 grid items-start gap-10 md:grid-cols-2">
           <form
             onSubmit={handleSubmit}
-            className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
+            className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-8 shadow-sm"
           >
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
@@ -44,7 +44,7 @@ export function ContactSection() {
                   type="text"
                   autoComplete="given-name"
                   required
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
 
@@ -58,7 +58,7 @@ export function ContactSection() {
                   type="text"
                   autoComplete="family-name"
                   required
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
             </div>
@@ -73,7 +73,7 @@ export function ContactSection() {
                 type="email"
                 autoComplete="email"
                 required
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
             </div>
 
@@ -87,7 +87,7 @@ export function ContactSection() {
                 type="tel"
                 autoComplete="tel"
                 required
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
             </div>
 
@@ -100,7 +100,7 @@ export function ContactSection() {
                 name="company"
                 type="text"
                 autoComplete="organization"
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
             </div>
 
@@ -111,7 +111,7 @@ export function ContactSection() {
               <select
                 id="reason"
                 name="reason"
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               >
                 <option value="">Select a reason</option>
                 <option value="sales">Sales inquiry</option>
@@ -137,8 +137,8 @@ export function ContactSection() {
           </form>
 
           <div className="space-y-8">
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900">
+            <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-8 shadow-sm">
+              <h3 className="text-lg font-semibold text-[rgb(var(--foreground))]">
                 Contact
               </h3>
 
@@ -159,7 +159,7 @@ export function ContactSection() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Phone
                   </p>
-                  <p className="mt-2 text-base font-semibold text-slate-900">
+                  <p className="mt-2 text-base font-semibold text-[rgb(var(--foreground))]">
                     +1 (415) 907-0704
                   </p>
                 </div>
@@ -168,7 +168,7 @@ export function ContactSection() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Address
                   </p>
-                  <p className="mt-2 text-base font-semibold text-slate-900">
+                  <p className="mt-2 text-base font-semibold text-[rgb(var(--foreground))]">
                     2108 N St # 14479
                     <br />
                     Sacramento, CA 95816
@@ -183,9 +183,9 @@ export function ContactSection() {
                   key={card.id}
                   id={card.id}
                   href="#"
-                  className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-300"
+                  className="group relative rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-300"
                 >
-                  <p className="text-sm font-semibold text-slate-900">
+                  <p className="text-sm font-semibold text-[rgb(var(--foreground))]">
                     {card.title}
                   </p>
                   <p className="mt-2 text-sm text-slate-500">
@@ -201,3 +201,6 @@ export function ContactSection() {
     </section>
   );
 }
+
+
+

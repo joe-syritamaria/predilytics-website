@@ -7,7 +7,7 @@ export default function MainPageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-blue-50 text-gray-900">
+    <div className="flex min-h-screen flex-col bg-[rgb(var(--background))] text-[rgb(var(--foreground))]">
       <MarketingHeader />
       <div className="flex-1">{children}</div>
       <MarketingFooter />

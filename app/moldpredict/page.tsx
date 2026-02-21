@@ -13,7 +13,7 @@ export default function Home() {
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   return (
-    <main className="bg-blue-50 text-gray-900 relative">
+    <main className="bg-[rgb(var(--background))] text-[rgb(var(--foreground))] relative">
       {/* HERO */}
       <section id="hero">
         <Hero
@@ -51,3 +51,4 @@ export default function Home() {
     </main>
   );
 }
+

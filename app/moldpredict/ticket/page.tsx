@@ -42,12 +42,12 @@ export default function SubmitTicketPage() {
   return (
     <section className="px-6 py-16">
       <div className="mx-auto w-full max-w-3xl">
-        <div className="rounded-3xl border border-blue-100 bg-white p-10 shadow-sm">
+        <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-10 shadow-sm">
           <div className="max-w-xl">
             <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
               Support
             </p>
-            <h1 className="mt-3 text-3xl font-semibold text-slate-900">
+            <h1 className="mt-3 text-3xl font-semibold text-[rgb(var(--foreground))]">
               Submit a Ticket
             </h1>
             <p className="mt-3 text-base text-slate-600">
@@ -70,7 +70,7 @@ export default function SubmitTicketPage() {
                   type="text"
                   autoComplete="given-name"
                   required
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
 
@@ -87,7 +87,7 @@ export default function SubmitTicketPage() {
                   type="text"
                   autoComplete="family-name"
                   required
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function SubmitTicketPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
             </div>
 
@@ -121,7 +121,7 @@ export default function SubmitTicketPage() {
                 name="subject"
                 type="text"
                 required
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
             </div>
 
@@ -137,7 +137,7 @@ export default function SubmitTicketPage() {
                 name="description"
                 rows={6}
                 required
-                className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
             </div>
 
@@ -166,3 +166,6 @@ export default function SubmitTicketPage() {
     </section>
   );
 }
+
+
+

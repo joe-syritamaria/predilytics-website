@@ -5,9 +5,9 @@ import AIChat from "./AIChat"; // Self-contained now
 
 export default function HelpContact() {
   return (
-    <section className="py-24 bg-blue-50">
+    <section className="py-24 bg-[rgb(var(--background))]">
       <div className="max-w-5xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-blue-700">Need Help?</h2>
+        <h2 className="text-4xl font-bold text-blue-700 dark:text-white">Need Help?</h2>
 
         <p className="mt-6 text-gray-600 text-lg">
           Get support through our AI assistant, submit a ticket,
@@ -17,9 +17,9 @@ export default function HelpContact() {
         <div className="mt-12 grid md:grid-cols-3 gap-6">
           {/* AI Chat */}
           <div
-            className="bg-white border rounded-2xl p-6 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
+            className="bg-[rgb(var(--card))] border border-[rgb(var(--border))] rounded-2xl p-6 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
           >
-            <h3 className="text-xl font-semibold text-blue-700">AI Assistant</h3>
+            <h3 className="text-xl font-semibold text-blue-700 dark:text-white">AI Assistant</h3>
             <p className="mt-3 text-gray-600 text-center">
               Get instant answers and guidance powered by AI.
             </p>
@@ -34,8 +34,8 @@ export default function HelpContact() {
           </div>
 
           {/* Ticket */}
-          <div className="bg-white border rounded-2xl p-6">
-            <h3 className="text-xl font-semibold text-blue-700">Submit a Ticket</h3>
+          <div className="bg-[rgb(var(--card))] border border-[rgb(var(--border))] rounded-2xl p-6">
+            <h3 className="text-xl font-semibold text-blue-700 dark:text-white">Submit a Ticket</h3>
             <p className="mt-3 text-gray-600">
               Report issues or request help from our support team.
             </p>
@@ -48,8 +48,8 @@ export default function HelpContact() {
           </div>
 
           {/* Call / Phone */}
-          <div className="bg-white border rounded-2xl p-6">
-            <h3 className="text-xl font-semibold text-blue-700">Talk to Us</h3>
+          <div className="bg-[rgb(var(--card))] border border-[rgb(var(--border))] rounded-2xl p-6">
+            <h3 className="text-xl font-semibold text-blue-700 dark:text-white">Talk to Us</h3>
             <p className="mt-3 text-gray-600">
               Schedule a call with our engineers for hands-on help.
             </p>
@@ -66,3 +66,4 @@ export default function HelpContact() {
     </section>
   );
 }
+

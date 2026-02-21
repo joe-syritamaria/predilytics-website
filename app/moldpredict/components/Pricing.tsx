@@ -18,9 +18,9 @@ const pricingTiers = [
 
 export default function Pricing() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-[rgb(var(--card))] py-24">
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-blue-700">Pricing</h2>
+        <h2 className="text-4xl font-bold text-blue-700 dark:text-white">Pricing</h2>
 
         <p className="mt-6 max-w-3xl mx-auto text-gray-600 text-lg">
           Choose a plan that fits your team’s needs. Upgrade as your
@@ -31,9 +31,9 @@ export default function Pricing() {
           {pricingTiers.map((tier) => (
             <div
               key={tier.title}
-              className="bg-blue-50 border rounded-2xl p-8 flex flex-col"
+              className="bg-[rgb(var(--input))] border border-[rgb(var(--border))] rounded-2xl p-8 flex flex-col"
             >
-              <h3 className="text-2xl font-semibold text-blue-700">
+              <h3 className="text-2xl font-semibold text-blue-700 dark:text-white">
                 {tier.title}
               </h3>
 
@@ -63,3 +63,4 @@ export default function Pricing() {
     </section>
   );
 }
+

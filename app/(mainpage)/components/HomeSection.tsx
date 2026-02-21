@@ -23,7 +23,7 @@ export function HomeSection() {
           Predictive maintenance analytics
         </span>
 
-        <h1 className="text-4xl font-semibold text-gray-900 mb-6 leading-tight">
+        <h1 className="text-4xl font-semibold text-[rgb(var(--foreground))] mb-6 leading-tight">
           Predict mold maintenance
           <br />
           before downtime hits
@@ -45,7 +45,7 @@ export function HomeSection() {
           hidden: { opacity: 0, y: 12 },
           visible: { opacity: 1, y: 0 },
         }}
-        className="w-full h-72 rounded-2xl bg-linear-to-br from-blue-50 to-white border border-blue-100 shadow-sm flex items-center justify-center text-gray-400 text-sm"
+        className="w-full h-72 rounded-2xl border border-[rgb(var(--border))] bg-gradient-to-br from-[rgb(var(--input))] to-[rgb(var(--card))] shadow-sm flex items-center justify-center text-gray-400 text-sm"
       >
                 <img
           src="/images/HeroImage.png"
@@ -57,3 +57,4 @@ export function HomeSection() {
     </motion.div>
   );
 }
+

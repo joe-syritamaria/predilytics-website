@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export default function MarketingFooter() {
   return (
-    <footer className="border-t border-blue-100 bg-white">
+    <footer className="border-t border-[rgb(var(--border))] bg-[rgb(var(--card))]">
       <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
-          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6">
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--input))] p-6">
             <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
               Contact Us
             </p>
-            <h3 className="mt-3 text-2xl font-semibold text-slate-900">
+            <h3 className="mt-3 text-2xl font-semibold text-[rgb(var(--foreground))]">
               Ready to talk?
             </h3>
             <p className="mt-3 text-sm text-slate-600">
@@ -26,7 +26,7 @@ export default function MarketingFooter() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <h4 className="text-sm font-semibold text-slate-900">
+              <h4 className="text-sm font-semibold text-[rgb(var(--foreground))]">
                 Product
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
@@ -39,7 +39,7 @@ export default function MarketingFooter() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900">
+              <h4 className="text-sm font-semibold text-[rgb(var(--foreground))]">
                 Resources
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
@@ -62,7 +62,7 @@ export default function MarketingFooter() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900">
+              <h4 className="text-sm font-semibold text-[rgb(var(--foreground))]">
                 Company
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
@@ -80,7 +80,7 @@ export default function MarketingFooter() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900">
+              <h4 className="text-sm font-semibold text-[rgb(var(--foreground))]">
                 Legal
               </h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
@@ -99,7 +99,7 @@ export default function MarketingFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-blue-100 pt-6 text-xs text-slate-500 sm:flex-row">
+        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-[rgb(var(--border))] pt-6 text-xs text-slate-500 sm:flex-row">
           <p>Building predictive confidence for manufacturers.</p>
           <p className="sm:text-right">
             Copyright 2026 Predilytics, Inc. All rights reserved
@@ -109,3 +109,4 @@ export default function MarketingFooter() {
     </footer>
   );
 }
+

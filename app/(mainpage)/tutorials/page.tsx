@@ -82,7 +82,7 @@ export default function TutorialsPage() {
             className={`px-4 py-2 rounded-full font-medium ${
               activeProduct === product
                 ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700"
+                : "bg-[rgb(var(--input))] text-gray-700"
             }`}
             onClick={() => setActiveProduct(product)}
           >
@@ -99,10 +99,10 @@ export default function TutorialsPage() {
           return (
             <div
               key={index}
-              className="relative rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+              className="relative rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] shadow-sm transition hover:shadow-md"
             >
               {/* Product Tag */}
-              <div className="absolute top-4 left-4 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+              <div className="absolute top-4 left-4 rounded-full bg-[rgb(var(--input))] px-3 py-1 text-sm font-medium text-gray-700">
                 {tutorial.product}
               </div>
               {tutorial.comingSoon && (
@@ -128,7 +128,7 @@ export default function TutorialsPage() {
                     className="object-cover transition-transform hover:scale-105"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center bg-gray-50 text-gray-400">
+                  <div className="flex h-full items-center justify-center bg-[rgb(var(--input))] text-gray-400">
                     Tutorial coming soon
                   </div>
                 )}
@@ -159,7 +159,7 @@ export default function TutorialsPage() {
               allowFullScreen
             />
             <button
-              className="absolute top-2 right-2 rounded-full bg-white px-3 py-1 text-gray-700 font-semibold"
+              className="absolute top-2 right-2 rounded-full bg-[rgb(var(--card))] px-3 py-1 text-gray-700 font-semibold"
               onClick={() => setSelectedVideo(null)}
             >
               Close
@@ -170,3 +170,4 @@ export default function TutorialsPage() {
     </main>
   );
 }
+

@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+/* ============================= */
+/* THEME VARIABLES */
+/* ============================= */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Dark mode defaults */
+  --background: 15 23 42;
+  --foreground: 255 255 255;
+  --card: 30 41 59;
+  --input: 51 65 85;
+  --border: 55 65 81;
 }
 
+.light {
+  /* Light mode overrides */
+  --background: 248 250 252;
+  --foreground: 17 24 39;
+  --card: 255 255 255;
+  --input: 255 255 255;
+  --border: 203 213 225;
+}
+
+/* ============================= */
+/* THEME TOKENS */
+/* ============================= */
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ============================= */
+/* BASE STYLES */
+/* ============================= */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ============================= */
+/* GLOBAL TYPOGRAPHY RULES */
+/* ============================= */
+
+/* Headings — Light mode (default) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: rgb(29 78 216); /* Tailwind blue-700 */
+}
+
+/* Headings — Dark mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: rgb(255 255 255);
+}
+
+/* Paragraph text — Light mode */
+p {
+  color: rgb(31 41 55); /* Tailwind gray-800 */
+}
+
+/* Paragraph text — Dark mode */
+.dark p {
+  color: rgb(229 231 235); /* Tailwind gray-200 */
+}
+
+/* Muted text adjustments for dark mode */
+.dark .text-slate-700,
+.dark .text-slate-600,
+.dark .text-gray-700,
+.dark .text-gray-600 {
+  color: rgb(229 231 235 / 0.9);
+}
+
+.dark .text-slate-500,
+.dark .text-gray-500,
+.dark .text-slate-400,
+.dark .text-gray-400 {
+  color: rgb(229 231 235 / 0.72);
+}
+
+.dark .text-neutral-800 {
+  color: rgb(var(--foreground));
+}
+
+.dark .text-neutral-500 {
+  color: rgb(229 231 235 / 0.72);
 }

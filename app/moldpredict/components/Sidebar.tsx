@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useActiveSection } from "../../hooks/useActiveSection";
+import DarkModeToggle from "@/app/(mainpage)/components/DarkModeToggle";
 
 const navItems = [
   { label: "Download", sectionId: "hero" },
@@ -23,8 +24,8 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-white border-b px-4 py-3 md:hidden">
-        <span className="font-semibold text-blue-700">Predilytics</span>
+      <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-[rgb(var(--card))] border-b px-4 py-3 md:hidden">
+        <span className="font-semibold text-blue-700 dark:text-white">Predilytics</span>
         <button onClick={() => setOpen(!open)} className="text-blue-600 font-medium">
           Menu
         </button>
@@ -32,12 +33,12 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r p-6 transform transition-transform duration-300
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-[rgb(var(--card))] border-r p-6 transform transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         {/* Logo */}
         <div className="mb-12">
-          <h1 className="text-xl font-bold text-blue-700 text-right pr-4">
+          <h1 className="text-xl font-bold text-blue-700 dark:text-white text-right pr-4">
             MoldPredict™
           </h1>
         </div>
@@ -64,7 +65,12 @@ export default function Sidebar() {
             );
           })}
         </nav>
+        <div className="mt-6 flex justify-end pr-4">
+          <DarkModeToggle />
+        </div>
       </aside>
     </>
   );
 }
+
+
