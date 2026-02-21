@@ -1,10 +1,14 @@
 export default function MoldPredictDownloadsPage() {
   const downloadsBase = process.env.NEXT_PUBLIC_DOWNLOADS_BASE_URL;
-  const windowsUrl = downloadsBase
-    ? `${downloadsBase}/Predilytics-Enterprise-Setup.exe`
-    : "#";
-  const macUrl = downloadsBase ? `${downloadsBase}/Predilytics-Enterprise.dmg` : "#";
-  const linuxUrl = downloadsBase ? `${downloadsBase}/Predilytics-Enterprise.AppImage` : "#";
+  const windowsUrl =
+    process.env.NEXT_PUBLIC_DOWNLOADS_WINDOWS_URL ||
+    (downloadsBase ? `${downloadsBase}/MoldPredict%20Setup%201.0.0-beta.0.exe` : "#");
+  const macUrl =
+    process.env.NEXT_PUBLIC_DOWNLOADS_MAC_URL ||
+    (downloadsBase ? `${downloadsBase}/Predilytics-Enterprise.dmg` : "#");
+  const linuxUrl =
+    process.env.NEXT_PUBLIC_DOWNLOADS_LINUX_URL ||
+    (downloadsBase ? `${downloadsBase}/Predilytics-Enterprise.AppImage` : "#");
 
   return (
     <div className="min-h-screen bg-[rgb(var(--background))] px-6 py-12 text-[rgb(var(--foreground))]">
@@ -41,9 +45,13 @@ export default function MoldPredictDownloadsPage() {
               Linux (.AppImage)
             </a>
           </div>
-          {!downloadsBase ? (
+          {!downloadsBase &&
+          !process.env.NEXT_PUBLIC_DOWNLOADS_WINDOWS_URL &&
+          !process.env.NEXT_PUBLIC_DOWNLOADS_MAC_URL &&
+          !process.env.NEXT_PUBLIC_DOWNLOADS_LINUX_URL ? (
             <p className="mt-4 text-sm text-amber-600">
-              Missing `NEXT_PUBLIC_DOWNLOADS_BASE_URL`. Set it to your S3 public base URL.
+              Missing download URLs. Set `NEXT_PUBLIC_DOWNLOADS_BASE_URL` or the per-OS
+              `NEXT_PUBLIC_DOWNLOADS_*_URL` env vars.
             </p>
           ) : null}
         </section>
