@@ -99,3 +99,39 @@ p {
 .dark .text-neutral-500 {
   color: rgb(229 231 235 / 0.72);
 }
+
+/* Force static light mode for specific route groups (billing/enterprise) */
+.force-light {
+  --background: 248 250 252;
+  --foreground: 17 24 39;
+  --card: 255 255 255;
+  --input: 255 255 255;
+  --border: 203 213 225;
+}
+
+.force-light h1,
+.force-light h2,
+.force-light h3,
+.force-light h4,
+.force-light h5,
+.force-light h6 {
+  color: rgb(17 24 39);
+}
+
+.force-light p {
+  color: rgb(31 41 55);
+}
+
+.force-light .text-slate-700,
+.force-light .text-slate-600,
+.force-light .text-gray-700,
+.force-light .text-gray-600 {
+  color: rgb(51 65 85);
+}
+
+.force-light .text-slate-500,
+.force-light .text-gray-500,
+.force-light .text-slate-400,
+.force-light .text-gray-400 {
+  color: rgb(100 116 139);
+}
