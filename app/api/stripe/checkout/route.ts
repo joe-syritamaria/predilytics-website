@@ -75,8 +75,43 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "User has no org." }, { status: 409 });
   }
 
+  const { data: org, error: orgError } = await supabase
+  .from("orgs")
+  .select("stripe_customer_id, name")
+  .eq("id", member.org_id)
+  .maybeSingle();
+
+if (orgError) {
+  return NextResponse.json({ error: orgError.message }, { status: 500 });
+}
+if (!org) {
+  return NextResponse.json({ error: "Org not found." }, { status: 404 });
+}
+
+let stripeCustomerId = org.stripe_customer_id as string | null;
+
+if (!stripeCustomerId) {
+  const customer = await stripe.customers.create({
+    metadata: { org_id: member.org_id },
+    // optional niceties:
+    // name: org.name ?? undefined,
+  });
+
+  stripeCustomerId = customer.id;
+
+  const { error: updateOrgErr } = await supabase
+    .from("orgs")
+    .update({ stripe_customer_id: stripeCustomerId })
+    .eq("id", member.org_id);
+
+  if (updateOrgErr) {
+    return NextResponse.json({ error: updateOrgErr.message }, { status: 500 });
+  }
+}
+
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
+    customer: stripeCustomerId,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/billing/cancel`,
