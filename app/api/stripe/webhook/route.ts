@@ -13,6 +13,16 @@ async function setOrgStripeCustomerId(orgId: string, customerId: string) {
   if (error) throw new Error(error.message);
 }
 
+async function setOrgClerkOrgId(orgId: string, clerkOrgId: string) {
+  const supabase = getEnterpriseSupabase();
+  const { error } = await supabase
+    .from("orgs")
+    .update({ clerk_org_id: clerkOrgId })
+    .eq("id", orgId);
+
+  if (error) throw new Error(error.message);
+}
+
 async function upsertOrgSubscription(params: {
   orgId: string;
   stripeSubscriptionId: string | null;
@@ -91,6 +101,11 @@ export async function POST(request: Request) {
       // Store customer id for Customer Portal
       await setOrgStripeCustomerId(orgId, customerId);
 
+      const clerkOrgId = session.metadata?.clerk_org_id;
+      if (clerkOrgId) {
+        await setOrgClerkOrgId(orgId, clerkOrgId);
+      }
+
       // Pull subscription for status + current_period_end
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
       const planId = subscription.items.data[0]?.price?.id ?? null;
@@ -113,6 +128,7 @@ export async function POST(request: Request) {
       const subscription = event.data.object as Stripe.Subscription;
       const subscriptionId = subscription.id;
       const planId = subscription.items.data[0]?.price?.id ?? null;
+      const clerkOrgId = subscription.metadata?.clerk_org_id ?? null;
 
       // Prefer mapping by stored subscription id (reliable)
       let orgId = await getOrgIdByStripeSubscriptionId(subscriptionId);
@@ -121,6 +137,9 @@ export async function POST(request: Request) {
       if (!orgId) orgId = subscription.metadata?.org_id ?? null;
 
       if (orgId) {
+        if (clerkOrgId) {
+          await setOrgClerkOrgId(orgId, clerkOrgId);
+        }
         await upsertOrgSubscription({
           orgId,
           stripeSubscriptionId: subscriptionId,
@@ -157,6 +176,11 @@ export async function POST(request: Request) {
       // Best: retrieve subscription to get authoritative status/period end
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
       const planId = subscription.items.data[0]?.price?.id ?? null;
+      const clerkOrgId = subscription.metadata?.clerk_org_id ?? null;
+
+      if (clerkOrgId) {
+        await setOrgClerkOrgId(orgId, clerkOrgId);
+      }
 
       await upsertOrgSubscription({
         orgId,

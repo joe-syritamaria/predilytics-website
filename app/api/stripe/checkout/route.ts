@@ -76,38 +76,41 @@ export async function POST(request: Request) {
   }
 
   const { data: org, error: orgError } = await supabase
-  .from("orgs")
-  .select("stripe_customer_id, name")
-  .eq("id", member.org_id)
-  .maybeSingle();
-
-if (orgError) {
-  return NextResponse.json({ error: orgError.message }, { status: 500 });
-}
-if (!org) {
-  return NextResponse.json({ error: "Org not found." }, { status: 404 });
-}
-
-let stripeCustomerId = org.stripe_customer_id as string | null;
-
-if (!stripeCustomerId) {
-  const customer = await stripe.customers.create({
-    metadata: { org_id: member.org_id },
-    // optional niceties:
-    // name: org.name ?? undefined,
-  });
-
-  stripeCustomerId = customer.id;
-
-  const { error: updateOrgErr } = await supabase
     .from("orgs")
-    .update({ stripe_customer_id: stripeCustomerId })
-    .eq("id", member.org_id);
+    .select("stripe_customer_id, name, clerk_org_id")
+    .eq("id", member.org_id)
+    .maybeSingle();
 
-  if (updateOrgErr) {
-    return NextResponse.json({ error: updateOrgErr.message }, { status: 500 });
+  if (orgError) {
+    return NextResponse.json({ error: orgError.message }, { status: 500 });
   }
-}
+  if (!org) {
+    return NextResponse.json({ error: "Org not found." }, { status: 404 });
+  }
+
+  let stripeCustomerId = org.stripe_customer_id as string | null;
+
+  if (!stripeCustomerId) {
+    const customer = await stripe.customers.create({
+      metadata: {
+        org_id: member.org_id,
+        ...(org.clerk_org_id ? { clerk_org_id: org.clerk_org_id } : {}),
+      },
+      // optional niceties:
+      // name: org.name ?? undefined,
+    });
+
+    stripeCustomerId = customer.id;
+
+    const { error: updateOrgErr } = await supabase
+      .from("orgs")
+      .update({ stripe_customer_id: stripeCustomerId })
+      .eq("id", member.org_id);
+
+    if (updateOrgErr) {
+      return NextResponse.json({ error: updateOrgErr.message }, { status: 500 });
+    }
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
@@ -119,11 +122,13 @@ if (!stripeCustomerId) {
     metadata: {
       org_id: member.org_id,
       user_id: userId,
+      ...(org.clerk_org_id ? { clerk_org_id: org.clerk_org_id } : {}),
     },
     subscription_data: {
       metadata: {
         org_id: member.org_id,
         user_id: userId,
+        ...(org.clerk_org_id ? { clerk_org_id: org.clerk_org_id } : {}),
       },
     },
   });

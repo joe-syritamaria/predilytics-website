@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { getEnterpriseSupabase } from "@/lib/supabase/enterprise";
 
 type CreateOrgPayload = {
@@ -27,13 +27,32 @@ export async function POST(request: Request) {
 
   const supabase = getEnterpriseSupabase();
 
+  const client = await clerkClient();
+  let clerkOrgId: string | null = null;
+
+  try {
+    const clerkOrg = await client.organizations.createOrganization({
+      name,
+      createdBy: userId,
+    });
+    clerkOrgId = clerkOrg.id;
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to create Clerk organization." },
+      { status: 500 },
+    );
+  }
+
   const { data: org, error: orgError } = await supabase
     .from("orgs")
-    .insert({ name })
-    .select("id, name, created_at")
+    .insert({ name, clerk_org_id: clerkOrgId })
+    .select("id, name, created_at, clerk_org_id")
     .single();
 
   if (orgError || !org) {
+    if (clerkOrgId) {
+      await client.organizations.deleteOrganization(clerkOrgId).catch(() => null);
+    }
     return NextResponse.json({ error: orgError?.message ?? "Org insert failed." }, { status: 500 });
   }
 
@@ -45,6 +64,9 @@ export async function POST(request: Request) {
 
   if (memberError) {
     await supabase.from("orgs").delete().eq("id", org.id);
+    if (clerkOrgId) {
+      await client.organizations.deleteOrganization(clerkOrgId).catch(() => null);
+    }
     return NextResponse.json({ error: memberError.message }, { status: 500 });
   }
 
