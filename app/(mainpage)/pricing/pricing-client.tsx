@@ -6,25 +6,49 @@ import Link from "next/link";
 /* -------------------- Currency Setup -------------------- */
 
 const CURRENCIES = {
-  USD: { symbol: "$", rate: 1, label: "USD (United States)" },
-  EUR: { symbol: "€", rate: 0.92, label: "EUR (Finland)" },
-  INR: { symbol: "₹", rate: 83, label: "INR (India)" },
-  MXN: { symbol: "$", rate: 17, label: "MXN (Mexico)" },
+  USD: { code: "en-US", currency: "USD", label: "USD (United States)" },
+  EUR: { code: "de-DE", currency: "EUR", label: "EUR (Finland)" },
+  INR: { code: "en-IN", currency: "INR", label: "INR (India)" },
+  MXN: { code: "es-MX", currency: "MXN", label: "MXN (Mexico)" },
 } as const;
 
 type Currency = keyof typeof CURRENCIES;
 
 /* -------------------- Pricing -------------------- */
 
-const BASE_PRICE_USD = 2399;
+// Checkout total (what Stripe sees)
+const ANNUAL_TOTAL_USD = 2399;
+
+// Assumed number of users included
+const INCLUDED_USERS = 5;
 
 /* -------------------- Component -------------------- */
 
 export default function PricingClient() {
   const [currency, setCurrency] = useState<Currency>("USD");
 
-  const { symbol, rate } = CURRENCIES[currency];
-  const price = Math.round(BASE_PRICE_USD * rate);
+  const { code, currency: currencyCode } = CURRENCIES[currency];
+
+  // Conversion rates (approximate display only)
+  const rates: Record<Currency, number> = {
+    USD: 1,
+    EUR: 0.92,
+    INR: 83,
+    MXN: 17,
+  };
+
+  const rate = rates[currency];
+
+  const annualTotal = ANNUAL_TOTAL_USD * rate;
+  const monthlyPerUser =
+    annualTotal / 12 / INCLUDED_USERS;
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat(code, {
+      style: "currency",
+      currency: currencyCode,
+      minimumFractionDigits: 2,
+    }).format(value);
 
   return (
     <>
@@ -42,7 +66,6 @@ export default function PricingClient() {
           ))}
         </select>
 
-        {/* Disclaimer */}
         <p className="max-w-md text-center text-xs text-slate-500">
           Displayed prices are approximate conversions based on current
           exchange rates and may vary at checkout.
@@ -53,7 +76,9 @@ export default function PricingClient() {
       <div className="mt-14 grid gap-8 md:grid-cols-2">
         {/* Free Plan */}
         <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-8">
-          <h2 className="text-xl font-semibold text-[rgb(var(--foreground))]">Free</h2>
+          <h2 className="text-xl font-semibold text-[rgb(var(--foreground))]">
+            Free
+          </h2>
           <p className="mt-2 text-sm text-slate-600">
             Risk-based insights and reporting.
           </p>
@@ -79,14 +104,30 @@ export default function PricingClient() {
 
         {/* Enterprise Plan */}
         <div className="scale-105 rounded-2xl border-2 border-blue-500 dark:border-white/90 bg-[rgb(var(--card))] p-8 shadow-[0_0_30px_rgba(59,130,246,0.28)] dark:shadow-[0_0_30px_rgba(255,255,255,0.16)]">
-          <h2 className="text-xl font-semibold text-blue-700 dark:text-white">Enterprise</h2>
+          <h2 className="text-xl font-semibold text-blue-700 dark:text-white">
+            Enterprise
+          </h2>
           <p className="mt-2 text-sm text-slate-600">
             Secure, local-first predictive modeling for production environments.
           </p>
 
-          <div className="mt-6 text-4xl font-semibold text-[rgb(var(--foreground))]">
-            {symbol}
-            {price} / year
+          {/* Updated Pricing Display */}
+          <div className="mt-6">
+            <div className="text-4xl font-semibold text-[rgb(var(--foreground))]">
+              {formatCurrency(monthlyPerUser)}{" "}
+              <span className="text-lg font-normal text-slate-600">
+                / user / month
+              </span>
+            </div>
+
+            <div className="mt-2 text-sm text-slate-500">
+              Billed annually
+            </div>
+
+            <div className="mt-1 text-sm font-medium text-[rgb(var(--foreground))]">
+              Total ({INCLUDED_USERS} users):{" "}
+              {formatCurrency(annualTotal)} / year
+            </div>
           </div>
 
           <ul className="mt-8 space-y-3 text-sm text-slate-700">
@@ -111,6 +152,3 @@ export default function PricingClient() {
     </>
   );
 }
-
-
-
