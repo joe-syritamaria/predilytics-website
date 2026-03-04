@@ -13,9 +13,12 @@ export default function WelcomePage() {
             We are thrilled to have you join the MoldPredict family. To start using
             the app with your organization&apos;s subscription, download it here.
           </p>
+          <p className="text-slate-600">
+            Sign in using email and password used during account creation
+          </p>
           <div className="flex justify-center">
             <a
-              href="https://predilyticsinc.com/moldpredict/download"
+              href="https://predilyticsinc.com/moldpredict/downloads"
               className="inline-flex items-center justify-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-blue-800"
             >
               Download MoldPredict
