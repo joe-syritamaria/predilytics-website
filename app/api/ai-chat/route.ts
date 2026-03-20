@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getClientIdentifier, rateLimit } from "@/lib/rateLimit";
 
 const BASE_URL = "https://moldpredict.com";
 
@@ -75,6 +76,15 @@ const knowledgeBase: { keywords: string[]; response: string }[] = [
 ];
 
 export async function POST(req: NextRequest) {
+  const clientId = getClientIdentifier(req);
+  const limit = rateLimit(`ai-chat:${clientId}`, 10, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": Math.ceil(limit.retryAfterMs / 1000).toString() } }
+    );
+  }
+
   const { message } = await req.json();
 
   if (!message) {

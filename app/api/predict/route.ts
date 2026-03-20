@@ -1,7 +1,17 @@
 // /app/api/predict/route.ts
 import { NextResponse } from "next/server";
+import { getClientIdentifier, rateLimit } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
+  const clientId = getClientIdentifier(request);
+  const limit = rateLimit(`predict:${clientId}`, 10, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": Math.ceil(limit.retryAfterMs / 1000).toString() } }
+    );
+  }
+
   const inferenceUrl = process.env.INFERENCE_URL;
 
   if (!inferenceUrl) {
