@@ -11,14 +11,19 @@ type FormState = {
   size: string;
   sideActions: string;
   runnerType: string;
+  spiClass: string;
+  cavitation: string;
+  cyclesSinceLastMajor: string;
   maintenanceIntervalDays: string;
   minorRepairsCount: string;
   plasticType: string;
   cycleTimeSeconds: string;
   hoursPerDay: string;
-  totalCycles: string;
+  avgPressurePsi: string;
+  avgTempC: string;
+  utilizationRatio: string;
+  scrapRateWindow: string;
   anticipatedRunTimeDays: string;
-  cyclesSinceOverhaul: string;
 };
 
 type PredictionResult = {
@@ -59,30 +64,28 @@ const formatCurrency = (value: number) =>
 const buildPredictBody = (formState: FormState) => {
   const moldId = formState.moldId.trim();
   return {
-    model_id: "xgb_v1",
+    model_id: null,
     mold_id: moldId,
     production: {
-      date: null,
       cycle_time_seconds: toNumber(formState.cycleTimeSeconds, 0),
       hours_per_day: toNumber(formState.hoursPerDay, 0),
-      maintenance_interval_days: toNumber(
-        formState.maintenanceIntervalDays,
-        0
-      ),
-      total_cycles: toNumber(formState.totalCycles, 0),
-      cycles_since_overhaul: toNumber(
-        formState.cyclesSinceOverhaul,
-        0
-      ),
+      maintenance_interval_days: toNumber(formState.maintenanceIntervalDays, 0),
       minor_repairs_count: toNumber(formState.minorRepairsCount, 0),
+      avg_pressure_psi: formState.avgPressurePsi ? toNumber(formState.avgPressurePsi, 0) : null,
+      avg_temp_c: formState.avgTempC ? toNumber(formState.avgTempC, 0) : null,
+      utilization_ratio: formState.utilizationRatio !== "" ? toNumber(formState.utilizationRatio, 0) : null,
+      scrap_rate_window: formState.scrapRateWindow !== "" ? toNumber(formState.scrapRateWindow, 0) : null,
     },
     mold_details: {
       mold_id: moldId,
-      complexity: formState.complexity,
+      complexity: toNumber(formState.complexity, 1),
       size: formState.size,
       plastic_type: formState.plasticType,
-      side_actions: formState.sideActions,
+      side_actions: toNumber(formState.sideActions, 0),
       runner_type: formState.runnerType,
+      spi_class: formState.spiClass,
+      cavitation: toNumber(formState.cavitation, 1),
+      cycles_since_last_major: toNumber(formState.cyclesSinceLastMajor, 0),
     },
   };
 };
@@ -180,18 +183,23 @@ const getRiskTone = (riskText: string | null) => {
 export default function DemoClient() {
   const [formState, setFormState] = useState<FormState>({
     moldId: "",
-    complexity: "simple",
-    size: "small",
-    sideActions: "none",
-    runnerType: "hot_runner",
+    complexity: "3",
+    size: "medium",
+    sideActions: "0",
+    runnerType: "hot",
+    spiClass: "104",
+    cavitation: "1",
+    cyclesSinceLastMajor: "0",
     maintenanceIntervalDays: "30",
     minorRepairsCount: "0",
     plasticType: "ABS",
     cycleTimeSeconds: "",
     hoursPerDay: "8",
-    totalCycles: "",
+    avgPressurePsi: "",
+    avgTempC: "",
+    utilizationRatio: "",
+    scrapRateWindow: "",
     anticipatedRunTimeDays: "",
-    cyclesSinceOverhaul: "",
   });
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -270,6 +278,29 @@ export default function DemoClient() {
     if (toNumber(formState.maintenanceIntervalDays, 0) < 0) {
       nextErrors.push("Maintenance interval must be 0 or more.");
     }
+    const complexity = toNumber(formState.complexity, 0);
+    if (complexity < 1 || complexity > 5) {
+      nextErrors.push("Complexity must be between 1 and 5.");
+    }
+    const cavitation = toNumber(formState.cavitation, 0);
+    if (cavitation < 1) {
+      nextErrors.push("Cavitation must be 1 or greater.");
+    }
+    if (toNumber(formState.cyclesSinceLastMajor, 0) < 0) {
+      nextErrors.push("Cycles since last major must be 0 or more.");
+    }
+    if (formState.utilizationRatio !== "") {
+      const util = toNumber(formState.utilizationRatio, -1);
+      if (util < 0 || util > 1) {
+        nextErrors.push("Utilization ratio must be between 0 and 1.");
+      }
+    }
+    if (formState.scrapRateWindow !== "") {
+      const scrap = toNumber(formState.scrapRateWindow, -1);
+      if (scrap < 0 || scrap > 1) {
+        nextErrors.push("Scrap rate must be between 0 and 1.");
+      }
+    }
     return nextErrors;
   };
 
@@ -293,18 +324,23 @@ export default function DemoClient() {
         return {
           ...prev,
           moldId: value,
-          complexity: "simple",
-          size: "small",
-          sideActions: "none",
-          runnerType: "hot_runner",
+          complexity: "3",
+          size: "medium",
+          sideActions: "0",
+          runnerType: "hot",
+          spiClass: "104",
+          cavitation: "1",
+          cyclesSinceLastMajor: "0",
           maintenanceIntervalDays: "30",
           minorRepairsCount: "0",
           plasticType: "ABS",
           cycleTimeSeconds: "",
           hoursPerDay: "8",
-          totalCycles: "",
+          avgPressurePsi: "",
+          avgTempC: "",
+          utilizationRatio: "",
+          scrapRateWindow: "",
           anticipatedRunTimeDays: "",
-          cyclesSinceOverhaul: "",
         };
       }
       return { ...prev, moldId: value };
@@ -383,14 +419,19 @@ export default function DemoClient() {
             size: formState.size,
             sideActions: formState.sideActions,
             runnerType: formState.runnerType,
+            spiClass: formState.spiClass,
+            cavitation: formState.cavitation,
+            cyclesSinceLastMajor: formState.cyclesSinceLastMajor,
             maintenanceIntervalDays: formState.maintenanceIntervalDays,
             minorRepairsCount: formState.minorRepairsCount,
             plasticType: formState.plasticType,
             cycleTimeSeconds: formState.cycleTimeSeconds,
             hoursPerDay: formState.hoursPerDay,
-            totalCycles: formState.totalCycles,
+            avgPressurePsi: formState.avgPressurePsi,
+            avgTempC: formState.avgTempC,
+            utilizationRatio: formState.utilizationRatio,
+            scrapRateWindow: formState.scrapRateWindow,
             anticipatedRunTimeDays: formState.anticipatedRunTimeDays,
-            cyclesSinceOverhaul: formState.cyclesSinceOverhaul,
           },
         }),
       });
@@ -572,10 +613,11 @@ export default function DemoClient() {
                         }
                         className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                       >
-                        <option value="simple">Simple</option>
-                        <option value="medium">Medium</option>
-                        <option value="complex">Complex</option>
-                        <option value="very_complex">Very complex</option>
+                        <option value="1">1 (Simple)</option>
+                        <option value="2">2</option>
+                        <option value="3">3 (Standard)</option>
+                        <option value="4">4</option>
+                        <option value="5">5 (Complex)</option>
                       </select>
                     </div>
 
@@ -610,8 +652,10 @@ export default function DemoClient() {
                       >
                         Side Actions
                       </label>
-                      <select
+                      <input
                         id="sideActions"
+                        type="number"
+                        min={0}
                         value={formState.sideActions}
                         onChange={(event) =>
                           setFormState((prev) => ({
@@ -620,12 +664,7 @@ export default function DemoClient() {
                           }))
                         }
                         className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                      >
-                        <option value="none">None</option>
-                        <option value="simple">Simple</option>
-                        <option value="complex">Complex</option>
-                        <option value="very_complex">Very complex</option>
-                      </select>
+                      />
                     </div>
 
                     <div>
@@ -646,9 +685,79 @@ export default function DemoClient() {
                         }
                         className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                       >
-                        <option value="hot_runner">Hot runner</option>
-                        <option value="cold_runner">Cold runner</option>
+                        <option value="hot">Hot</option>
+                        <option value="cold">Cold</option>
                       </select>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="spiClass"
+                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                      >
+                        SPI Class
+                      </label>
+                      <select
+                        id="spiClass"
+                        value={formState.spiClass}
+                        onChange={(event) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            spiClass: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      >
+                        <option value="101">101</option>
+                        <option value="102">102</option>
+                        <option value="103">103</option>
+                        <option value="104">104</option>
+                        <option value="105">105</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="cavitation"
+                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                      >
+                        Cavitation
+                      </label>
+                      <input
+                        id="cavitation"
+                        type="number"
+                        min={1}
+                        value={formState.cavitation}
+                        onChange={(event) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            cavitation: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="cyclesSinceLastMajor"
+                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                      >
+                        Cycles Since Last Major
+                      </label>
+                      <input
+                        id="cyclesSinceLastMajor"
+                        type="number"
+                        min={0}
+                        value={formState.cyclesSinceLastMajor}
+                        onChange={(event) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            cyclesSinceLastMajor: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      />
                     </div>
 
                     <div>
@@ -775,20 +884,89 @@ export default function DemoClient() {
 
                     <div>
                       <label
-                        htmlFor="totalCycles"
+                        htmlFor="avgPressurePsi"
                         className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
                       >
-                        Mold Cycle Reading (total cycles)
+                        Avg Pressure (psi)
                       </label>
                       <input
-                        id="totalCycles"
+                        id="avgPressurePsi"
                         type="number"
                         min={0}
-                        value={formState.totalCycles}
+                        value={formState.avgPressurePsi}
                         onChange={(event) =>
                           setFormState((prev) => ({
                             ...prev,
-                            totalCycles: event.target.value,
+                            avgPressurePsi: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="avgTempC"
+                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                      >
+                        Avg Temperature (C)
+                      </label>
+                      <input
+                        id="avgTempC"
+                        type="number"
+                        value={formState.avgTempC}
+                        onChange={(event) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            avgTempC: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="utilizationRatio"
+                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                      >
+                        Utilization Ratio (0-1)
+                      </label>
+                      <input
+                        id="utilizationRatio"
+                        type="number"
+                        min={0}
+                        max={1}
+                        step="0.01"
+                        value={formState.utilizationRatio}
+                        onChange={(event) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            utilizationRatio: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="scrapRateWindow"
+                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                      >
+                        Scrap Rate Window (0-1)
+                      </label>
+                      <input
+                        id="scrapRateWindow"
+                        type="number"
+                        min={0}
+                        max={1}
+                        step="0.01"
+                        value={formState.scrapRateWindow}
+                        onChange={(event) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            scrapRateWindow: event.target.value,
                           }))
                         }
                         className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
@@ -817,27 +995,6 @@ export default function DemoClient() {
                       />
                     </div>
 
-                    <div>
-                      <label
-                        htmlFor="cyclesSinceOverhaul"
-                        className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                      >
-                        Cycles since last refurbish
-                      </label>
-                      <input
-                        id="cyclesSinceOverhaul"
-                        type="number"
-                        min={0}
-                        value={formState.cyclesSinceOverhaul}
-                        onChange={(event) =>
-                          setFormState((prev) => ({
-                            ...prev,
-                            cyclesSinceOverhaul: event.target.value,
-                          }))
-                        }
-                        className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-[rgb(var(--foreground))] shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
