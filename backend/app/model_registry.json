@@ -1,0 +1,14 @@
+{
+  "default_model_id": "continuum1o_v4.3.4",
+  "models": [
+    {
+      "id": "continuum1o_v4.3.4",
+      "name": "Continuum1o",
+      "type": "pt",
+      "status": "stable",
+      "artifact_path": "continuum1o/2-14-2026/continuum1o_v4.3.4_20260219_184643.pt",
+      "preprocessor_path": "continuum1o/2-14-2026/continuum1o_v4.3.4_20260219_184643_preprocessor.json", 
+      "metrics_path": "continuum1o/2-14-2026/continuum1o_v4.3.4_20260219_184643_metrics.json" 
+    }
+  ]
+}

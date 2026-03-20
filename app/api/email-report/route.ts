@@ -133,7 +133,19 @@ export async function POST(request: Request) {
               </tr>
               <tr>
                 <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Runner type: ${escapeHtml(formData.runnerType)}</td>
-                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Mold cycle reading: ${escapeHtml(formData.totalCycles)}</td>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Avg pressure (psi): ${escapeHtml(formData.avgPressurePsi)}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">SPI class: ${escapeHtml(formData.spiClass)}</td>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Avg temperature (C): ${escapeHtml(formData.avgTempC)}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Cavitation: ${escapeHtml(formData.cavitation)}</td>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Utilization ratio: ${escapeHtml(formData.utilizationRatio)}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Cycles since last major: ${escapeHtml(formData.cyclesSinceLastMajor)}</td>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Scrap rate window: ${escapeHtml(formData.scrapRateWindow)}</td>
               </tr>
               <tr>
                 <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Maintenance int days: ${escapeHtml(formData.maintenanceIntervalDays)}</td>
@@ -141,9 +153,10 @@ export async function POST(request: Request) {
               </tr>
               <tr>
                 <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Minor repairs count: ${escapeHtml(formData.minorRepairsCount)}</td>
-                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">Cycles since last refurbish: ${escapeHtml(formData.cyclesSinceOverhaul)}</td>
+                <td style="padding:8px;border-bottom:1px solid #e2e8f0;">&mdash;</td>
               </tr>
             </tbody>
+
           </table>
 
           <p style="margin:0 0 8px;"><strong>Pending refurbish</strong> = ${predictedDays ?? "N/A"} days</p>
