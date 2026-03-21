@@ -383,7 +383,7 @@ export default function DemoClient() {
             `Request failed with status ${response.status}.`,
         ]);
       }
-    } catch (error) {
+    } catch {
       setErrors(["Unable to reach the demo server."]);
     } finally {
       if (slowTimer) {
@@ -447,7 +447,7 @@ export default function DemoClient() {
       setEmailStatus("Thanks! We will email your report soon.");
       setEmailSent(true);
       setShowEmailForm(false);
-    } catch (error) {
+    } catch {
       setEmailError("Unable to send email report.");
     } finally {
       setIsEmailSending(false);
@@ -458,30 +458,6 @@ export default function DemoClient() {
     formState.anticipatedRunTimeDays,
     0
   );
-  const riskMarker = (() => {
-    if (
-      anticipatedRunTime > 0 &&
-      typeof predictedDays === "number" &&
-      predictedDays > 0
-    ) {
-      const ratio = Math.min(
-        Math.max(anticipatedRunTime / predictedDays, 0),
-        1
-      );
-      return `${Math.round(ratio * 100)}%`;
-    }
-    if (riskText && riskText.toLowerCase().includes("high")) {
-      return "75%";
-    }
-    if (riskText && riskText.toLowerCase().includes("medium")) {
-      return "50%";
-    }
-    if (riskText && riskText.toLowerCase().includes("low")) {
-      return "25%";
-    }
-    return "50%";
-  })();
-
   const riskLabel = (() => {
     if (
       anticipatedRunTime > 0 &&
@@ -613,11 +589,11 @@ export default function DemoClient() {
                         }
                         className="mt-2 w-full rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
                       >
-                        <option value="1">1 (Simple)</option>
-                        <option value="2">2</option>
-                        <option value="3">3 (Standard)</option>
-                        <option value="4">4</option>
-                        <option value="5">5 (Complex)</option>
+                        <option value="1">1 - Flat Shut-Off + No Weld</option>
+                        <option value="2">2 - Curved Shut-Off + No Weld</option>
+                        <option value="3">3 Telescopic Shut-Off + No Weld</option>
+                        <option value="4">4 - Insert Molding + No Weld</option>
+                        <option value="5">5 - Select If Any Weld Exist in Mold Steels</option>
                       </select>
                     </div>
 
@@ -1032,7 +1008,7 @@ export default function DemoClient() {
                   Disclaimer.
                 </p>
                 <p className="mt-2 text-xs leading-relaxed text-slate-500">
-                  By clicking this box and clicking "Run Prediction" button,
+                  By clicking this box and clicking &quot;Run Prediction&quot; button,
                   you confirm that you are a human user and agree to these
                   terms: 1. the user acknowledges that the report (AI-generated)
                   and subsequent email (automated) contents are solely intended
@@ -1047,7 +1023,7 @@ export default function DemoClient() {
                   for any particular purposes. 5. the user acknowledges that
                   the usage, consequences and repercussions of this report is
                   not binding to Moldpredict or to Predilytics Inc.; and any/all
-                  decisions based on this report is at the user's own risk
+                  decisions based on this report is at the user&apos;s own risk
                 </p>
               </div>
 
@@ -1189,7 +1165,7 @@ export default function DemoClient() {
                       </button>
                     </div>
                     <div className="rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--input))] px-3 py-2 text-[11px] leading-relaxed text-slate-500">
-                      By clicking "Submit", you agree to our privacy policy and
+                      By clicking &quot;Submit&quot;, you agree to our privacy policy and
                       agree to receive further email notifications regarding
                       product updates and marketing.
                     </div>
