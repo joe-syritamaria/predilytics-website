@@ -458,6 +458,26 @@ export default function DemoClient() {
     formState.anticipatedRunTimeDays,
     0
   );
+  const forceHighRiskForComplexity =
+    formState.complexity === "5" &&
+    anticipatedRunTime <= 0 &&
+    typeof predictedDays === "number" &&
+    predictedDays > 0;
+  const riskBarRatio =
+    predictedDays && predictedDays > 0
+      ? Math.min(
+          Math.max(
+            forceHighRiskForComplexity
+              ? 1
+              : anticipatedRunTime / predictedDays,
+            0
+          ),
+          1
+        )
+      : null;
+  const riskDisplayText = forceHighRiskForComplexity
+    ? "High Risk"
+    : riskText;
   const riskLabel = (() => {
     if (
       anticipatedRunTime > 0 &&
@@ -1049,10 +1069,10 @@ export default function DemoClient() {
                 </div>
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-semibold ${getRiskTone(
-                    riskText
+                    riskDisplayText
                   )}`}
                 >
-                  {riskText ?? "No risk score"}
+                  {riskDisplayText ?? "No risk score"}
                 </span>
               </div>
 
@@ -1101,10 +1121,7 @@ export default function DemoClient() {
                       className="absolute -top-1 h-5 w-1 rounded bg-slate-100 transition-all duration-300"
                       style={{
                         left: `${Math.round(
-                          Math.min(
-                            Math.max(anticipatedRunTime / predictedDays, 0),
-                            1
-                          ) * 100
+                          (riskBarRatio ?? 0) * 100
                         )}%`,
                       }}
                     />
