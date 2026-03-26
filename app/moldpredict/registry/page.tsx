@@ -92,6 +92,7 @@ export default function GlobalMoldRegistryPage() {
                 </p>
               </div>
               <div className="mt-6 flex flex-col items-start gap-3">
+                {/* TODO: Move QR generation to a server-side or local generator to avoid sharing URLs with third-party services. */}
                 <Image
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
                     result.publicUrl
