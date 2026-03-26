@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase/admin";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import crypto from "crypto";
 
 const PUBLIC_ID_PREFIX = "MP";
@@ -55,6 +55,16 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ ok: false, error: "Invalid payload." }, { status: 400 });
+  }
+
+  let supabaseAdmin;
+  try {
+    supabaseAdmin = createSupabaseAdminClient();
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: "Missing Supabase admin environment variables." },
+      { status: 500 }
+    );
   }
 
   const moldIdentification = safeText(body.moldIdentification ?? null);

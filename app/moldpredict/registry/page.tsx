@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
@@ -91,12 +92,15 @@ export default function GlobalMoldRegistryPage() {
                 </p>
               </div>
               <div className="mt-6 flex flex-col items-start gap-3">
-                <img
+                <Image
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
                     result.publicUrl
                   )}`}
                   alt={`QR code for ${result.publicId}`}
+                  width={160}
+                  height={160}
                   className="h-40 w-40 rounded-xl border border-emerald-200 bg-white p-2"
+                  unoptimized
                 />
                 <a
                   href={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(
