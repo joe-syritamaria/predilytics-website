@@ -15,19 +15,31 @@ interface Screen {
 }
 
 const screens: Screen[] = [
-  {
-    title: "Input",
-    desc: "Provide your mold data, plastic type, and process parameters to generate predictions. Watch this video to see it in action!",
-    imgType: "video",
-    imgSrc: "https://www.youtube.com/embed/0m502UbHSXM", // YouTube embed URL
-  },
-  {
-    title: "Output",
-    desc: "View the predicted days to overhaul, expected costs, risk metrics, and more.",
-    imgType: "image",
-    imgSrc: "/images/OutputExplanation.png",
-  },
-];
+    {
+      title: "Login",
+      desc: "Jump right in! Sign in with the credentials you used to purchase MoldPredict™ and start turning data into actionable insights.",
+      imgType: "image",
+      imgSrc: "/images/Login.jpeg",
+    },
+    {
+      title: "Create Client",
+      desc: "Set up your client profile in seconds. Organize projects, track progress, and tailor predictions to your team’s needs.",
+      imgType: "image",
+      imgSrc: "/images/CreateClient.jpeg",
+    },
+    {
+      title: "Input",
+      desc: "Provide your mold data, material types, and process parameters. MoldPredict™ analyzes everything to generate accurate, actionable predictions.",
+      imgType: "image",
+      imgSrc: "/images/Input.jpeg",
+    },
+    {
+      title: "Output",
+      desc: "Instantly view predictions like days to overhaul, expected costs, risk metrics, and insights that help you plan ahead.",
+      imgType: "image",
+      imgSrc: "/images/OutputExplanation.png",
+    },
+  ];
 
 export default function HowItWorks({ onClose }: HowItWorksProps) {
   return (

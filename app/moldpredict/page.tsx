@@ -23,14 +23,14 @@ export default function Home() {
         />
       </section>
 
-      {/* PROBLEM / SOLUTION */}
-      <section id="problem">
-        <ProblemSolution />
-      </section>
-
       {/* PRODUCT */}
       <section id="product">
         <ProductOverview />
+      </section>
+      
+      {/* PROBLEM / SOLUTION */}
+      <section id="problem">
+        <ProblemSolution />
       </section>
 
       {/* PRICING */}

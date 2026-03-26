@@ -42,7 +42,7 @@ export default function TutorialsPage() {
       title: "MoldPredict – Platform Walkthrough",
       description:
         "A full demo of the MoldPredict platform, covering project setup, predictions, and result interpretation.",
-      youtube: "https://youtu.be/0m502UbHSXM",
+      youtube: "https://youtu.be/sSwrL6qr124",
       product: "MoldPredict",
     },
     {
