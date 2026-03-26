@@ -41,6 +41,15 @@ export default function Hero({ onSeeHow }: HeroProps) {
         >
           Download
         </Link>
+
+        <Link
+          href="/moldpredict/registry"
+          target="_blank"
+          rel="noreferrer"
+          className="px-8 py-4 bg-[rgb(var(--card))] border border-blue-600 text-blue-600 rounded-xl text-lg font-medium hover:bg-[rgb(var(--input))] transform hover:scale-105 transition duration-300"
+        >
+          Global Mold Registry
+        </Link>
         {/* See How It Works button keeps secondary style */}
         <button
           onClick={onSeeHow} // trigger the HowItWorks modal
