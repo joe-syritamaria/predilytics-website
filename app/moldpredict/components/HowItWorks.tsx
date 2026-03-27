@@ -35,9 +35,9 @@ const screens: Screen[] = [
     },
     {
       title: "Output",
-      desc: "Instantly view predictions like days to overhaul, expected costs, risk metrics, and insights that help you plan ahead.",
+      desc: "Instantly view predictions like days to overhaul, cost forcast by risk window, risk curve, and insights that help you plan ahead.",
       imgType: "image",
-      imgSrc: "/images/OutputExplanation.png",
+      imgSrc: "/images/ProductOutput.jpeg",
     },
   ];
 
