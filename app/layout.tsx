@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-import { ClerkProvider } from "@clerk/nextjs";
+import ClerkThemeProvider from "@/app/components/ClerkThemeProvider";
 
 const themeScript = `
   (function () {
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-[rgb(var(--background))] text-[rgb(var(--foreground))] transition-colors duration-300">
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkThemeProvider>{children}</ClerkThemeProvider>
         <Analytics />
       </body>
     </html>
