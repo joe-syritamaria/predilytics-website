@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
 export default function DarkModeToggle() {
   const [dark, setDark] = useState(() => {
@@ -25,7 +26,7 @@ export default function DarkModeToggle() {
       aria-label="Toggle theme"
       type="button"
     >
-      {dark ? "Light" : "Dark"}
+      {dark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
     </button>
   );
 }

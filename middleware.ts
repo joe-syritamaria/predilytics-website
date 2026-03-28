@@ -9,6 +9,7 @@ export const config = {
     "/api/stripe(.*)",
     "/api/stripeCheckout(.*)",
     "/api/me(.*)",
+    "/api/orgs(.*)",
     "/billing(.*)",
     "/enterprise(.*)",
   ],

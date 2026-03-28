@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import DarkModeToggle from "@/app/(mainpage)/components/DarkModeToggle";
+import UserStatusButton from "@/app/components/UserStatusButton";
 
 type MenuKey = "products" | "resources" | null;
 
@@ -151,9 +152,16 @@ export default function MarketingHeader() {
           >
             Pricing
           </Link>
+          <Link
+            href="/billing/portal"
+            className="rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-3 py-2 text-sm font-semibold text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+          >
+            Manage your subscription
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
+          <UserStatusButton />
           <DarkModeToggle />
           <button
             type="button"
@@ -233,6 +241,13 @@ export default function MarketingHeader() {
               onClick={closeMenus}
             >
               Pricing
+            </Link>
+            <Link
+              href="/billing/portal"
+              className="block rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+              onClick={closeMenus}
+            >
+              Manage your subscription
             </Link>
           </div>
         </div>
