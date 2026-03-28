@@ -1,7 +1,7 @@
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark, light } from "@clerk/themes";
+import { dark } from "@clerk/themes";
 import { useEffect, useState } from "react";
 
 function getIsDark() {
@@ -29,7 +29,7 @@ export default function ClerkThemeProvider({
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: isDark ? dark : light,
+        baseTheme: isDark ? dark : undefined,
       }}
     >
       {children}
