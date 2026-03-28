@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import WarmServer from "./WarmServer";
 
 interface MoldRegistryPageProps {
   params: { publicId: string };
@@ -49,6 +50,7 @@ export default async function MoldRegistryPublicPage({ params }: MoldRegistryPag
 
   return (
     <section className="px-6 py-16">
+      <WarmServer />
       <div className="mx-auto w-full max-w-4xl">
         <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-10 shadow-sm">
           <div className="max-w-2xl">
