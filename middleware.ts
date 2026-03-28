@@ -8,6 +8,7 @@ export const config = {
   matcher: [
     "/api/stripe(.*)",
     "/api/stripeCheckout(.*)",
+    "/api/me(.*)",
     "/billing(.*)",
     "/enterprise(.*)",
   ],
