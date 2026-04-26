@@ -1,11 +1,26 @@
-export default function navbar() {
+import Image from "next/image";
+
+export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-[rgb(var(--card))]/80 backdrop-blur border-b">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="text-xl font-semibold text-blue-700 dark:text-white">
-          MoldPredict™
+        
+        {/* LEFT: LOGO + BRAND */}
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logos/MoldPredict Logo.jpeg"
+            alt="MoldPredict logo"
+            width={36}
+            height={36}
+            className="object-contain rounded-md"
+          />
+
+          <div className="text-xl font-semibold text-blue-700 dark:text-white">
+            MoldPredict™
+          </div>
         </div>
 
+        {/* CENTER NAV */}
         <nav className="hidden md:flex items-center gap-8 text-sm text-gray-600">
           <a href="#product" className="hover:text-blue-600 transition">
             Product
@@ -21,12 +36,12 @@ export default function navbar() {
           </a>
         </nav>
 
+        {/* RIGHT CTA */}
         <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">
           Get Started
         </button>
+
       </div>
     </header>
   );
 }
-
-
