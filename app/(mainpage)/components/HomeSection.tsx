@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Brain,
@@ -25,6 +26,7 @@ const OutlineIcon = ({ icon: Icon }: any) => (
 );
 
 export function HomeSection() {
+  const router = useRouter();
   return (
     <div className="flex flex-col gap-28">
 
@@ -59,7 +61,10 @@ export function HomeSection() {
             adapts, and evolves through real-world feedback.
           </p>
 
-          <button className="mb-6 px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+          <button
+            onClick={() => router.push("/explore-architecture")}
+            className="mb-6 px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
             Explore Our Architecture
           </button>
 
