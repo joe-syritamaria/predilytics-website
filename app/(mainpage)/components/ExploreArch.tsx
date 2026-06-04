@@ -71,11 +71,11 @@ export default function ExploreArch() {
         <p className="text-[rgb(var(--foreground))]/70 max-w-2xl mx-auto">
           A system that helps machines learn, improve, and adapt over time — similar to how humans learn from experience.
           <br /><br />
-          GEMLA is the core framework that powers this: it turns raw data into structured intelligence that can evolve safely and continuously.
+          GEMLA is the core framework that powers this: it turns raw data into structured intelligence.
         </p>
 
         <p className="text-sm text-[rgb(var(--foreground))]/60 mt-4 max-w-xl mx-auto">
-          Built for engineers, researchers, and real-world systems that need intelligence that evolves — not stays static.
+          Built by engineers for researchers and developers creating real-world systems that evolve.
         </p>
       </motion.section>
 
@@ -83,7 +83,7 @@ export default function ExploreArch() {
       <section>
         <SectionTitle
           eyebrow="SDK"
-          title="GEMLA / Hybrid Γ–EML–α SDK"
+          title="GEMLA SDK"
           desc="A development framework that lets engineers build systems that learn from data, improve over time, and stay under control. Think of it as the operating system for adaptive intelligence."
         />
 
