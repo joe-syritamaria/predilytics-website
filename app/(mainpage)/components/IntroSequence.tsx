@@ -16,7 +16,7 @@ export function IntroSequence({ onComplete }: { onComplete: () => void }) {
         }
         return p + 1;
       });
-    }, 20); // ~2s total
+    }, 20);
 
     return () => clearInterval(interval);
   }, [onComplete]);
@@ -32,7 +32,7 @@ export function IntroSequence({ onComplete }: { onComplete: () => void }) {
         className="text-3xl font-semibold text-white mb-6"
         animate={{ opacity: progress / 100 }}
       >
-        Predilytics
+        Predylitics
       </motion.div>
 
       <div className="w-64 h-2 rounded-full bg-gray-800 overflow-hidden">
