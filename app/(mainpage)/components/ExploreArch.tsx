@@ -95,8 +95,7 @@ export default function ExploreArch() {
               <h3 className="font-semibold text-lg">Core Architecture SDK</h3>
             </div>
             <p className="text-sm text-[rgb(var(--foreground))]/70 mb-4">
-              This is the technical engine behind GEMLA.
-              It helps break complex real-world signals into structured patterns so systems can learn from them in a stable and explainable way.
+              GEMLA helps break complex real-world signals into structured patterns so systems can learn from them in a stable and explainable way.
             </p>
             <a
               href="https://github.com/Predilytics-Inc/gemla-sdk"
