@@ -19,9 +19,6 @@ type Currency = keyof typeof CURRENCIES;
 // Checkout total (what Stripe sees)
 const ANNUAL_TOTAL_USD = 2399;
 
-// Assumed number of users included
-const INCLUDED_USERS = 5;
-
 /* -------------------- Component -------------------- */
 
 export default function PricingClient() {
@@ -40,8 +37,6 @@ export default function PricingClient() {
   const rate = rates[currency];
 
   const annualTotal = ANNUAL_TOTAL_USD * rate;
-  const monthlyPerUser =
-    annualTotal / 12 / INCLUDED_USERS;
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat(code, {
@@ -114,9 +109,9 @@ export default function PricingClient() {
           {/* Updated Pricing Display */}
           <div className="mt-6">
             <div className="text-4xl font-semibold text-[rgb(var(--foreground))]">
-              {formatCurrency(monthlyPerUser)}{" "}
+              {formatCurrency(199.9 * rate)}
               <span className="text-lg font-normal text-slate-600">
-                / user / month
+                {" "} / month / molding machine
               </span>
             </div>
 
@@ -125,8 +120,7 @@ export default function PricingClient() {
             </div>
 
             <div className="mt-1 text-sm font-medium text-[rgb(var(--foreground))]">
-              Total ({INCLUDED_USERS} users):{" "}
-              {formatCurrency(annualTotal)} / year
+              {formatCurrency(2399 * rate)} / year
             </div>
           </div>
 
