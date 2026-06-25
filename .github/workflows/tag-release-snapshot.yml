@@ -1,0 +1,88 @@
+name: Tag Release Snapshot
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release-snapshot:
+    name: Create release snapshot
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tagged commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build release notes
+        id: notes
+        shell: bash
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          COMMIT_TITLE="$(git log -1 --pretty=%s)"
+          COMMIT_BODY="$(git log -1 --pretty=%b)"
+
+          PREVIOUS_TAG="$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)"
+
+          {
+            echo "body<<EOF"
+            echo "## ${TAG_NAME}"
+            echo ""
+            echo "**Commit:** \`${SHORT_SHA}\`"
+            echo ""
+            echo "### Change summary"
+            echo "${COMMIT_TITLE}"
+            echo ""
+
+            if [ -n "${COMMIT_BODY}" ]; then
+              echo "### Commit details"
+              echo "${COMMIT_BODY}"
+              echo ""
+            fi
+
+            if [ -n "${PREVIOUS_TAG}" ]; then
+              echo "### Changes since ${PREVIOUS_TAG}"
+              echo ""
+              git log "${PREVIOUS_TAG}..HEAD" --pretty="- %s (%h)"
+            else
+              echo "### Changes"
+              echo ""
+              git log -1 --pretty="- %s (%h)"
+            fi
+
+            echo ""
+            echo "### Snapshot"
+            echo "This release includes a ZIP snapshot of the repository at this tag."
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create repository snapshot ZIP
+        shell: bash
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          SAFE_REPO_NAME="$(basename "${GITHUB_REPOSITORY}")"
+          ZIP_NAME="${SAFE_REPO_NAME}-${TAG_NAME}-snapshot.zip"
+
+          git archive \
+            --format=zip \
+            --output="${ZIP_NAME}" \
+            --prefix="${SAFE_REPO_NAME}-${TAG_NAME}/" \
+            HEAD
+
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Create GitHub release and upload ZIP
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "${ZIP_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "${{ steps.notes.outputs.body }}"
