@@ -1,4 +1,4 @@
 {
-    "python.defaultInterpreterPath": "E:\\Dev\\envs\\predilyticsweb\\Scripts\\python.exe",
-    "python.terminal.activateEnvironment": false
+    "python.defaultInterpreterPath": "C:\\ActiveProjects\\Envs\\predilytics-website\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true
 }
