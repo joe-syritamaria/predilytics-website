@@ -222,6 +222,8 @@ export default function GemlaZetaPage() {
             <ExcludedItem>No public ZIP archive containing the full scripts, raw outputs, or internal validation corpus.</ExcludedItem>
             <ExcludedItem>No guarantee that the Riemann Hypothesis is proven by the current evidence packet.</ExcludedItem>
             <ExcludedItem>No unlimited custom research support or unlimited future major-version access.</ExcludedItem>
+            <ExcludedItem>Not intended to claim RH polya proof in the available manner or any user modified version.</ExcludedItem>
+            <ExcludedItem>Not intended to be used as support for Clay Mathematics Institute Millenium Prize Problems</ExcludedItem>
           </ul>
         </Card>
       </section>
