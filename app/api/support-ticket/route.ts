@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getClientIdentifier, rateLimit } from "@/lib/rateLimit";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Predilytics <no-reply@predilyticsinc.com>";
 const SUPPORT_EMAIL = "support@predilyticsinc.com";
 
@@ -22,6 +21,8 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   let payload: {
     firstName?: string;
