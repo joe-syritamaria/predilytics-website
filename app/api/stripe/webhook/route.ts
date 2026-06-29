@@ -63,6 +63,50 @@ async function getOrgIdByStripeSubscriptionId(stripeSubscriptionId: string) {
   return data?.org_id ?? null;
 }
 
+async function grantGemlaEntitlement(params: {
+  userId: string;
+  productId: string;
+  stripeSessionId: string;
+  stripePaymentIntentId: string | null;
+  amountTotal: number | null;
+  currency: string | null;
+}) {
+  const supabase = getEnterpriseSupabase();
+  const now = new Date().toISOString();
+
+  const { error: orderError } = await supabase.from("gemla_orders").upsert(
+    {
+      user_id: params.userId,
+      product_id: params.productId,
+      stripe_session_id: params.stripeSessionId,
+      stripe_payment_intent_id: params.stripePaymentIntentId,
+      status: "paid",
+      amount_total: params.amountTotal,
+      currency: params.currency,
+      updated_at: now,
+    },
+    { onConflict: "stripe_session_id" },
+  );
+
+  if (orderError) throw new Error(orderError.message);
+
+  const { error: entitlementError } = await supabase
+    .from("gemla_entitlements")
+    .upsert(
+      {
+        user_id: params.userId,
+        product_id: params.productId,
+        status: "active",
+        license_type: "one_time",
+        granted_at: now,
+        revoked_at: null,
+      },
+      { onConflict: "user_id,product_id" },
+    );
+
+  if (entitlementError) throw new Error(entitlementError.message);
+}
+
 export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -81,9 +125,39 @@ export async function POST(request: Request) {
   }
 
   try {
-    // 1) INITIAL LINK: org_id + customer + subscription
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
+  // 1) CHECKOUT COMPLETED:
+  //    - GEMLA one-time payment
+  //    - MoldPredict subscription checkout
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+
+    const productId = session.metadata?.product_id;
+
+    // GEMLA-Zeta one-time purchase flow
+    if (session.mode === "payment" && productId === "gemla_zeta_v1") {
+      const userId = session.metadata?.user_id;
+
+      const paymentIntentId =
+        typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : session.payment_intent?.id ?? null;
+
+      if (!userId) throw new Error("Missing user_id in GEMLA session metadata.");
+
+      await grantGemlaEntitlement({
+        userId,
+        productId,
+        stripeSessionId: session.id,
+        stripePaymentIntentId: paymentIntentId,
+        amountTotal: session.amount_total,
+        currency: session.currency,
+      });
+
+      return NextResponse.json({ received: true });
+    }
+
+    // MoldPredict subscription flow
+    if (session.mode === "subscription") {
       const orgId = session.metadata?.org_id;
 
       const customerId =
@@ -118,6 +192,7 @@ export async function POST(request: Request) {
         currentPeriodEnd: subscription.current_period_end ?? null,
       });
     }
+  }
 
     // 2) SUBSCRIPTION EVENTS: use subscription.id -> find org
     if (
@@ -191,7 +266,7 @@ export async function POST(request: Request) {
       });
     }
   } catch (err) {
-    // Optional: log err for debugging
+    console.error("Stripe webhook handling failed:", err);
     return NextResponse.json({ error: "Webhook handling failed." }, { status: 500 });
   }
 
