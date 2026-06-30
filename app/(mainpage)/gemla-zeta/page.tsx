@@ -17,6 +17,9 @@ import {
   XCircle,
 } from "lucide-react";
 
+const polarRepoCheckoutUrl =
+  process.env.NEXT_PUBLIC_POLAR_GEMLA_REPO_CHECKOUT_URL ?? "#";
+
 const Card = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <div
     className={`rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm transition hover:shadow-md ${className}`}
@@ -105,7 +108,7 @@ export default function GemlaZetaPage() {
             href="/gemla-zeta/checkout"
             className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus-visible:ring-2 focus-visible:ring-blue-300"
           >
-            Buy access
+            Buy Dashboard Access
             <ArrowRight size={16} />
           </Link>
           <Link
@@ -114,6 +117,14 @@ export default function GemlaZetaPage() {
           >
             Open dashboard
           </Link>
+          <a
+            href={polarRepoCheckoutUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-5 py-3 text-sm font-semibold text-[rgb(var(--foreground))] shadow-sm transition hover:bg-[rgb(var(--input))]"
+          >
+            Buy Repo Access
+          </a>
         </div>
 
         <p className="mx-auto mt-4 max-w-xl text-sm text-[rgb(var(--foreground))]/55">
@@ -294,22 +305,24 @@ export default function GemlaZetaPage() {
 
       {/* ================= CTA ================= */}
       <section className="text-center">
-        <div className="mx-auto max-w-3xl rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-8 shadow-sm md:p-10">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-1 text-sm text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
-            <Sparkles size={14} />
-            GEMLA-Zeta v1.0
-          </div>
-          <h2 className="mb-4 text-3xl font-semibold">Ready to review the evidence packet?</h2>
-          <p className="mx-auto mb-8 max-w-xl text-[rgb(var(--foreground))]/70">
-            Purchase a one-time account-bound license and access the protected dashboard after payment confirmation.
-          </p>
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/gemla-zeta/checkout"
             className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus-visible:ring-2 focus-visible:ring-blue-300"
           >
-            Buy access
+            Buy Dashboard Access
             <ArrowRight size={16} />
           </Link>
+
+          <a
+            href={polarRepoCheckoutUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--card))] px-6 py-3 text-sm font-semibold text-[rgb(var(--foreground))] shadow-sm transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+          >
+            Buy Repo Access
+            <ArrowRight size={16} />
+          </a>
         </div>
       </section>
     </div>
