@@ -1,58 +1,51 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 export default function GemlaCheckoutClient() {
-  const router = useRouter();
-  const { isLoaded, isSignedIn } = useAuth();
+  const started = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoaded) return;
-
-    if (!isSignedIn) {
-      router.replace("/sign-in?redirect_url=/gemla-zeta/checkout");
-      return;
-    }
-
-    let cancelled = false;
+    if (started.current) return;
+    started.current = true;
 
     async function startCheckout() {
-      setError(null);
+      try {
+        const response = await fetch("/api/gemla/checkout", {
+          method: "POST",
+        });
 
-      const response = await fetch("/api/gemla/checkout", {
-        method: "POST",
-      });
+        const data = await response.json().catch(() => ({}));
 
-      const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data?.url) {
+          setError(data?.error ?? "Unable to start checkout.");
+          return;
+        }
 
-      if (!response.ok || !data?.url) {
-        setError(data?.error ?? "Unable to start checkout.");
-        return;
-      }
-
-      if (!cancelled) {
         window.location.href = data.url;
+      } catch {
+        setError("Unable to start checkout.");
       }
     }
 
     startCheckout();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isLoaded, isSignedIn, router]);
+  }, []);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-        <h1 className="text-xl font-semibold">Preparing secure checkout...</h1>
-        <p className="mt-2 text-sm text-slate-600">
+    <main className="flex min-h-screen items-center justify-center bg-[rgb(var(--background))] p-6 text-[rgb(var(--foreground))]">
+      <div className="w-full max-w-md rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-8 text-center shadow-sm">
+        <h1 className="text-xl font-semibold text-blue-600">
+          Preparing secure checkout...
+        </h1>
+
+        <p className="mt-2 text-sm text-[rgb(var(--muted-foreground))]">
           We are creating your one-time GEMLA-Zeta license checkout.
         </p>
-        {error ? <p className="mt-6 text-sm text-red-600">{error}</p> : null}
+
+        {error ? (
+          <p className="mt-6 text-sm text-red-500">{error}</p>
+        ) : null}
       </div>
     </main>
   );
