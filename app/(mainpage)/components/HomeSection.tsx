@@ -61,12 +61,27 @@ export function HomeSection() {
             adapts, and evolves through real-world feedback.
           </p>
 
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+
           <button
             onClick={() => router.push("/explore-architecture")}
-            className="mb-6 px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white
+              hover:bg-blue-700 transition"
           >
             Explore Our Architecture
           </button>
+
+          <button
+            onClick={() => router.push("/frontier-asi")}
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white
+              hover:bg-blue-700 transition
+              inline-flex items-center gap-2"
+          >
+            <Brain size={16} />
+            Explore Frontier ASI
+          </button>
+
+        </div>
 
           <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
             <div className="flex items-center gap-2">

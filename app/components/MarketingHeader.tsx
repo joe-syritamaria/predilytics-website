@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import DarkModeToggle from "@/app/(mainpage)/components/DarkModeToggle";
 import UserStatusButton from "@/app/components/UserStatusButton";
 
-type MenuKey = "products" | "resources" | null;
+type MenuKey = "products" | "research" | "resources" | null;
 
 export default function MarketingHeader() {
   const [openMenu, setOpenMenu] = useState<MenuKey>(null);
@@ -91,13 +91,66 @@ export default function MarketingHeader() {
                   MoldPredict
                 </Link>
 
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={openMenu === "research"}
+              aria-controls="research-menu"
+              onClick={() => toggleMenu("research")}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggleMenu("research");
+                }
+              }}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-[rgb(var(--background))] hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300"
+            >
+              Research
+              <span className="text-xs">v</span>
+            </button>
+            {openMenu === "research" && (
+              <div
+                id="research-menu"
+                role="menu"
+                className="absolute left-0 mt-2 w-80 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-2 shadow-lg"
+              >
                 <Link
-                  href="/gemla-zeta"
+                  href="/research"
+                  role="menuitem"
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  View all research
+                </Link>
+                <div className="my-1 border-t border-[rgb(var(--border))]" />
+                <Link
+                  href="/research/gemla-zeta"
                   role="menuitem"
                   className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
                   onClick={closeMenus}
                 >
                   GEMLA-Zeta
+                </Link>
+                <Link
+                  href="/research/responsible-superintelligence"
+                  role="menuitem"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  Responsible superintelligence
+                </Link>
+                <Link
+                  href="/research/navier-stokes"
+                  role="menuitem"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  Navier–Stokes
                 </Link>
               </div>
             )}
@@ -206,13 +259,48 @@ export default function MarketingHeader() {
                 >
                   MoldPredict
                 </Link>
+              </div>
+            )}
+
+            <button
+              type="button"
+              aria-expanded={mobileSection === "research"}
+              onClick={() => toggleMobileSection("research")}
+              className="flex w-full items-center justify-between rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-blue-300"
+            >
+              Research
+              <span className="text-xs">v</span>
+            </button>
+            {mobileSection === "research" && (
+              <div className="ml-3 space-y-2">
                 <Link
-                href="/gemla-zeta"
-                className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
-                onClick={closeMenus}
-              >
-                GEMLA-Zeta
-              </Link>
+                  href="/research"
+                  className="block rounded-lg px-3 py-2 font-semibold text-blue-600 hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  View all research
+                </Link>
+                <Link
+                  href="/research/gemla-zeta"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  GEMLA-Zeta
+                </Link>
+                <Link
+                  href="/research/responsible-superintelligence"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  Responsible superintelligence
+                </Link>
+                <Link
+                  href="/research/navier-stokes"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  Navier–Stokes
+                </Link>
               </div>
             )}
 
