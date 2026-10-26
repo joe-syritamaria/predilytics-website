@@ -341,26 +341,6 @@ export default function ResponsibleSuperintelligencePage() {
             </>
           ),
         },
-
-        {
-          id: "claim-boundary",
-          label: "Claim boundary",
-          content: (
-            <>
-              <p>
-                The paper does not claim that AGI or ASI has already been
-                created, nor that the architecture proves universal alignment,
-                universal deception prevention, or universal safety. Its
-                strongest formal claim is a conditional architecture and
-                benchmark program whose S3 label is earned only inside a
-                declared evaluation envelope after cross-domain capability,
-                unfamiliar-task acquisition, transfer, recursive improvement,
-                protected recovery, and non-self-escalation obligations are
-                demonstrated.
-              </p>
-            </>
-          ),
-        },
       ]}
     />
   );

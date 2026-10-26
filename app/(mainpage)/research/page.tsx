@@ -7,7 +7,7 @@ export default function ResearchPage() {
     <main className="mx-auto w-full max-w-6xl px-6 py-16 md:py-20">
       <header className="max-w-3xl">
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-blue-600">
-          Predilytics Research
+          Predilytics Research Lab
         </p>
         <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
           Research and technical publications

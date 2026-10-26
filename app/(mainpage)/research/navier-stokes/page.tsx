@@ -327,24 +327,6 @@ export default function NavierStokesResearchPage() {
             </>
           ),
         },
-
-        {
-          id: "claim-boundary",
-          label: "Claim boundary",
-          content: (
-            <>
-              <p>
-                The paper treats GEMLA as an observation and audit layer. A
-                successful invariant result would establish an observable
-                transport statement, not by itself solve the native
-                Navier–Stokes existence and smoothness problem. The paper
-                explicitly keeps native dynamics, latent-state inference,
-                invariant transport, and the final admissibility interpretation
-                as separate layers.
-              </p>
-            </>
-          ),
-        },
       ]}
     />
   );

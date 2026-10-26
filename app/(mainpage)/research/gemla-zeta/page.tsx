@@ -18,7 +18,7 @@ export default function GemlaZetaResearchPage() {
           content: (
             <>
               <p>
-                GEMLA-Zeta is presented here as a research evidence package rather than a standalone claim of proof. The publication page separates the public research description from the account-gated evidence dashboard and private implementation layer.
+                The Riemann hypothesis, one of the most important yet unproven in number theory, states that non-trivial zeros of Zeta function always remain on the critical line. GEMLA-Zeta test sequence looks for evidence of a counter example.
               </p>
               <p>
                 The public layer explains what is being evaluated, what evidence is exposed, and where the claim boundaries sit. The controlled dashboard is used for result summaries, theorem-bridge reports, selected exports, and bounded test tools.
@@ -68,17 +68,6 @@ export default function GemlaZetaResearchPage() {
               </p>
               <p>
                 <Link href="/gemla-zeta">Open the GEMLA-Zeta evidence dashboard overview</Link> for the current access model and included materials.
-              </p>
-            </>
-          ),
-        },
-        {
-          id: "claim-boundary",
-          label: "Claim boundary",
-          content: (
-            <>
-              <p>
-                The current evidence packet should not be presented as a declaration that the Riemann Hypothesis has been proved, nor as a substitute for the proof standards required by the mathematical community. Its role is narrower: to expose the structure of the computational audit, the evidence it produces, and the proof obligations that remain open.
               </p>
             </>
           ),
