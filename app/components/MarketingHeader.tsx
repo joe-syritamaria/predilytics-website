@@ -91,6 +91,15 @@ export default function MarketingHeader() {
                   MoldPredict
                 </Link>
 
+                <Link
+                  href="/gemla-finance"
+                  role="menuitem"
+                  className="block rounded-lg px-3 py-2 text-sm text-[rgb(var(--foreground))] transition hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  GEMLA Finance
+                </Link>
+
               </div>
             )}
           </div>
@@ -259,6 +268,15 @@ export default function MarketingHeader() {
                 >
                   MoldPredict
                 </Link>
+
+                <Link
+                  href="/gemla-finance"
+                  className="block rounded-lg px-3 py-2 text-[rgb(var(--foreground))] hover:bg-[rgb(var(--input))] focus-visible:ring-2 focus-visible:ring-blue-300"
+                  onClick={closeMenus}
+                >
+                  GEMLA Finance
+                </Link>
+
               </div>
             )}
 
