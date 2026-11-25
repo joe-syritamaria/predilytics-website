@@ -1,0 +1,502 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+/* Host theme synchronization: defaults still follow OS when viewed standalone. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+/* GEMLA Finance Free: all 18 one-session records public; advanced controls locked */
+.free-banner { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:14px 16px; border:1px solid var(--ring); border-radius:10px; background:var(--surface); }
+.free-banner strong { font-size:14px; }
+.free-banner p { color:var(--ink2); font-size:12.5px; }
+.free-pill { display:inline-block; font-size:11px; font-weight:750; letter-spacing:.04em; padding:4px 9px;
+  border-radius:999px; color:#126947; background:#e4f7ec; margin-right:8px; }
+.premium-link { display:inline-flex; justify-content:center; align-items:center; gap:7px;
+  padding:10px 15px; border-radius:9px; background:#174bb9; color:#fff; text-decoration:none;
+  font-weight:700; font-size:13px; transition:background .15s; }
+.premium-link:hover,.premium-link:focus-visible { background:#103782; }
+.seg button:disabled { cursor:not-allowed; opacity:.45; }
+.seg button[aria-pressed="true"]:disabled { opacity:1; color:var(--ink); }
+.chk.is-locked { cursor:not-allowed; }
+.chk.is-locked input { cursor:not-allowed; opacity:.75; }
+.chk.is-locked span { opacity:.75; }
+.premium-hint { color:var(--ink2); font-size:12px; }
+.premium-preview { position:relative; min-height:310px; overflow:hidden; gap:8px; }
+.premium-preview .preview-chart { position:relative; flex:1; min-height:185px; overflow:hidden; }
+.premium-preview .preview-visual { width:100%; height:100%; filter:blur(6px); opacity:.5; transform:scale(1.025); }
+.premium-preview .preview-lock { position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; padding:18px;
+  background:linear-gradient(180deg,transparent,rgba(120,120,120,.08)); }
+.preview-lock .lock-mark { display:flex; align-items:center; justify-content:center; width:42px; height:42px;
+  border:1px solid var(--ring); border-radius:50%; background:var(--surface); font-size:22px; margin-bottom:10px; }
+.preview-lock strong { font-size:16px; }
+.preview-lock p { color:var(--ink2); max-width:260px; font-size:12.5px; margin:5px 0 14px; }
+@media(max-width:600px) { .free-banner { align-items:stretch; } .free-banner .premium-link { width:100%; } }
+
+</style>
+<script>
+(function () {
+  function setTheme(theme) {
+    if (theme === 'light' || theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }
+  window.addEventListener('message', function (event) {
+    if (event.origin !== window.location.origin) return;
+    if (event.data && event.data.type === 'gemla-finance:set-theme') {
+      setTheme(event.data.theme);
+    }
+  });
+  try {
+    if (window.parent !== window) {
+      var host = window.parent.document.documentElement;
+      var hostTheme = host.classList.contains('dark') || host.dataset.theme === 'dark' ? 'dark' : 'light';
+      setTheme(hostTheme);
+    }
+  } catch (_) { /* Standalone dashboard retains native color preference. */ }
+})();
+</script></head><body>
+<title>Relay Paths and Bands</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column; filters in a single row above the small multiples; scatter and the live-chain slot below; table view last.
+   Color roles: A1 = categorical slot 1, A2 = slot 2, GEMLA live = slot 3; market line = secondary ink. */
+:root {
+  --bg: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10); --neutral: #b9b7ad;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --wash: rgba(11,11,11,0.035); --vol: #b5122c;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --neutral: #5a5a56;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --wash: rgba(255,255,255,0.04); --vol: #ff8f9c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --neutral: #5a5a56;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --wash: rgba(255,255,255,0.04); --vol: #ff8f9c; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--font);
+  padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.page { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+header { display: flex; flex-direction: column; gap: 10px; }
+h1 { font-size: 28px; line-height: 1.15; margin: 0; letter-spacing: -0.015em; text-wrap: balance; }
+h2 { font-size: 18px; margin: 0; letter-spacing: -0.005em; text-wrap: balance; }
+h3 { font-size: 15px; margin: 0; }
+p { margin: 0; }
+.lede { color: var(--ink2); max-width: 70ch; }
+.note { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 12px 14px; max-width: 78ch; }
+.note .tag { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); margin-bottom: 2px; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.sechead { display: flex; flex-direction: column; gap: 4px; }
+.sub { color: var(--ink2); max-width: 78ch; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.filters .grp { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filters .lab { color: var(--ink2); font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid var(--ring); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.seg button { font: inherit; font-size: 13px; color: var(--ink2); background: transparent; border: 0; padding: 6px 12px; cursor: pointer; min-height: 32px; }
+.seg button + button { border-left: 1px solid var(--ring); }
+.seg button[aria-pressed="true"] { background: var(--wash); color: var(--ink); font-weight: 600; }
+.seg button:hover { background: var(--wash); }
+.chk { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink); cursor: pointer; }
+.chk input { width: 16px; height: 16px; margin: 0; accent-color: var(--ink2); }
+:focus-visible { outline: 2px solid var(--ink2); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--ink2); font-size: 12.5px; align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend svg { display: block; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 14px 14px 10px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.ph { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.pv { font-size: 18px; font-weight: 600; }
+.ps { color: var(--ink2); font-size: 12.5px; min-height: 18px; }
+.stat { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12.5px; color: var(--ink2); min-height: 20px; }
+.stat span { display: inline-flex; align-items: center; gap: 5px; }
+.sg { display: flex; flex-wrap: wrap; gap: 2px 14px; width: 100%; }
+.pnote { font-size: 12px; color: var(--ink2); }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; touch-action: pan-y; }
+svg text { font-family: var(--font); fill: var(--muted); font-size: 10.5px; }
+svg text.ink { fill: var(--ink); }
+svg text.ink2 { fill: var(--ink2); }
+.twocol { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .twocol { grid-template-columns: minmax(0, 1fr); } }
+.facts { display: flex; flex-direction: column; gap: 10px; }
+.facts p { color: var(--ink2); }
+.facts strong { color: var(--ink); }
+.rows { display: flex; flex-direction: column; gap: 10px; }
+.row { display: grid; grid-template-columns: minmax(96px, 150px) minmax(0, 1fr) 64px; align-items: center; gap: 10px; font-size: 13px; }
+.row .nm { color: var(--ink2); }
+.row .track { height: 18px; position: relative; }
+.row .bar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; background: var(--neutral); }
+.row .bar.live { background: var(--s3); }
+.row .val { color: var(--ink); font-weight: 600; }
+.slot { border: 1px solid var(--ring); border-radius: 10px; padding: 12px 14px; background: var(--wash); color: var(--ink2); }
+details { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 10px 14px; }
+summary { cursor: pointer; font-weight: 600; }
+.tablewrap { overflow-x: auto; margin-top: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:nth-child(-n+4), td:nth-child(-n+4), th:last-child, td:last-child { text-align: left; }
+th { color: var(--ink2); font-weight: 600; }
+footer { color: var(--ink2); font-size: 12.5px; display: flex; flex-direction: column; gap: 4px; max-width: 90ch; }
+#tip[hidden] { display: none; }
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ring); border-radius: 8px;
+  padding: 8px 10px; font-size: 12.5px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); max-width: 300px; display: flex; flex-direction: column; gap: 3px; }
+#tip .t { font-weight: 600; }
+#tip .r { display: flex; align-items: baseline; gap: 6px; color: var(--ink2); }
+#tip .r b { color: var(--ink); font-weight: 600; }
+#tip .k { display: inline-block; width: 12px; height: 3px; border-radius: 2px; align-self: center; flex: none; }
+.k1 { background: var(--s1); } .k2 { background: var(--s2); } .k0 { background: var(--ink2); } .kv { background: var(--vol); }
+:root { --r0: #b9cde8; --r1: #0b3d80; --a1: #eb6834; --a2: #9b4fd0; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --r0: #35568a; --r1: #a9cdfc; --a1: #d95926; --a2: #9566dd; } }
+:root[data-theme="dark"] { --r0: #35568a; --r1: #a9cdfc; --a1: #d95926; --a2: #9566dd; }
+.ka1 { background: var(--a1); } .ka2 { background: var(--a2); } .krel { background: var(--r1); }
+.checks { display: flex; flex-direction: column; gap: 8px; max-width: 90ch; }
+.checks p { color: var(--ink2); }
+.checks strong { color: var(--ink); }
+table.tr th:nth-child(n), table.tr td:nth-child(n) { text-align: right; }
+table.tr th:first-child, table.tr td:first-child, table.tr th:last-child, table.tr td:last-child { text-align: left; }
+.prices { display: grid; grid-template-columns: repeat(4, max-content); column-gap: 7px; row-gap: 3px; font-size: 14px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.prow { display: contents; }
+/* Keep audit summary readable without affecting the five charts or premium tile. */
+.historical-audit-table { min-width: 860px; }
+.historical-audit-table th, .historical-audit-table td { padding: 10px 9px; }
+.historical-audit-table tbody tr:hover { background: var(--wash); }
+.historical-audit-table tbody th { font-weight: 600; }
+.audit-explainer { margin-top: 12px; color: var(--ink2); font-size: 12px; line-height: 1.6; }
+</style>
+
+<main class="page">
+  <header>
+    <h1>Relay Paths and Bands <span class="free-pill">FREE</span></h1>
+    <p class="lede">Actual closes and GEMLA Finance next-session forecasts for five free tickers. Extended relay paths and FGF shadow-lane rehearsal bands (A1 and A2) are premium features.</p>
+    <p class="note"><span class="tag">Important Disclaimer</span><strong>No Guarantees:</strong> Stock market predictions, forecasts, and forward-looking statements are inherently subjective and speculative. No representation or warranty, express or implied, is made regarding the accuracy, completeness, timeliness, or reliability of the information provided. Past performance is not indicative of future results, and no forecast can be guaranteed.</p>
+  </header>
+
+  <div class="free-banner">
+    <div>
+      <strong>GEMLA Finance Free · 5 tickers</strong>
+      <p>Explore all 18 historical next-session forecasts for AAPL, MSFT, NVDA, TSLA and SPY. Multi-session paths, FGF bands, and more tickers require premium access.</p>
+    </div>
+    <a class="premium-link" href="/gemla-finance/pricing" target="_top">Get Full Access</a>
+  </div>
+
+  <section aria-labelledby="h-paths">
+    <div class="sechead">
+      <h2 id="h-paths">Forecast paths against actual closes</h2>
+      <p class="sub" id="paths-sub"></p>
+    </div>
+    <div class="filters" role="group" aria-label="Chart filters">
+      <div class="grp"><span class="lab" id="lab-r">As-of records</span>
+        <div class="seg" role="group" aria-labelledby="lab-r" id="seg-r"></div></div>
+      <div class="grp"><span class="lab" id="lab-l">Path length (sessions)</span>
+        <div class="seg" role="group" aria-labelledby="lab-l" id="seg-l"></div></div>
+      <div class="grp"><span class="lab" id="lab-arms">FGF bands</span>
+        <label class="chk"><input type="checkbox" id="arm-A1" disabled aria-label="A1 premium feature, locked"> A1</label>
+        <label class="chk"><input type="checkbox" id="arm-A2" disabled aria-label="A2 premium feature, locked"> A2</label></div>
+      <div class="grp"><span class="lab" id="lab-rel">Relay layers</span>
+        <label class="chk"><input type="checkbox" id="rel-path" disabled aria-label="Relay path and range premium feature, locked"> Path and range, older to newer record</label>
+        <label class="chk"><input type="checkbox" id="rel-dot" checked disabled aria-label="Next-session forecast on, locked for free access"> Next-session forecast</label></div>
+    </div>
+    <p class="premium-hint">🔒 Free view: All 18 records · 1 session · FGF bands off · Relay path/range off · Next-session forecast on. Advanced features remain locked.
+      <a href="/gemla-finance/pricing" target="_top">Get access to advanced chart controls</a>.
+    </p>
+    <div class="legend" id="legend"></div>
+    <div class="grid" id="panels"></div>
+  </section>
+
+  <section aria-labelledby="h-audit" class="historical-audit">
+    <div class="sechead">
+      <h2 id="h-audit">Historical relay track-record audit summary</h2>
+      <p class="sub">This audit summary comes from the original 90-record report and recorded closes through 2026-11-23. All 18 as-of records per ticker are included in the public charts, with one-session forecast values; original longer forecast paths and FGF rehearsal data are not included.</p>
+    </div>
+    <div class="card">
+      <div class="tablewrap" role="region" aria-label="Historical relay track-record audit table" tabindex="0">
+        <table class="tr historical-audit-table">
+          <thead><tr><th scope="col">Ticker</th><th scope="col">Stated settled</th><th scope="col">Stated direction hits</th><th scope="col">Stated in range</th><th scope="col">Recomputed settled</th><th scope="col">Recomputed direction hits</th><th scope="col">Recomputed in range</th><th scope="col">Result</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">AAPL</th><td>16</td><td>6 of 16</td><td>11 of 16</td><td>16</td><td>6 of 16</td><td>11 of 16</td><td>Matches</td></tr>
+            <tr><th scope="row">MSFT</th><td>15</td><td>7 of 15</td><td>8 of 15</td><td>16</td><td>7 of 16</td><td>9 of 16</td><td>Differs by 1 settled</td></tr>
+            <tr><th scope="row">NVDA</th><td>16</td><td>10 of 16</td><td>5 of 16</td><td>16</td><td>10 of 16</td><td>5 of 16</td><td>Matches</td></tr>
+            <tr><th scope="row">TSLA</th><td>16</td><td>9 of 16</td><td>9 of 16</td><td>16</td><td>9 of 16</td><td>9 of 16</td><td>Matches</td></tr>
+            <tr><th scope="row">SPY</th><td>16</td><td>7 of 16</td><td>14 of 16</td><td>16</td><td>7 of 16</td><td>14 of 16</td><td>Matches</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="audit-explainer">83 of 90 relay records match the bars-based recount exactly; 90 of 90 match when outcomes the relay marks unsettled are excluded. The MSFT November 12 target remains marked unsettled due to a November 11 reference-price mismatch ($521.12 relay versus $521.13 bars). These are historical audit counts, not independent certification or a guarantee of future forecasts.</p>
+    </div>
+  </section>
+
+</main>
+<div id="tip" hidden></div>
+
+<script>
+(function () {
+const D = {"fetched_at":"2026-11-24T08:40:08Z","bars_source":"yfinance; cboe VIX_History.csv","price_basis":"close_auto_adjust_false","n_sessions":1271,"sessions":["2026-09-22","2026-09-23","2026-09-24","2026-09-25","2026-09-28","2026-09-29","2026-09-30","2026-10-01","2026-10-02","2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-19","2026-10-20","2026-10-21","2026-10-22","2026-10-23","2026-10-26","2026-10-27","2026-10-28","2026-10-29","2026-10-30","2026-11-02","2026-11-03","2026-11-04","2026-11-05","2026-11-06","2026-11-09","2026-11-10","2026-11-11","2026-11-12","2026-11-13","2026-11-16","2026-11-17","2026-11-18","2026-11-19","2026-11-20","2026-11-23"],"tickers":["AAPL","MSFT","NVDA","TSLA","SPY"],"close":{"AAPL":[339.75,337.02,335.92,341.07,338.4,329.4,333.02,330.32,333.69,332.89,333.63,336.67,340.42,336.64,340.97,341.27,342.96,342.0,343.46,342.94,339.5,343.99,348.22,347.73,343.91,347.1,343.83,348.91,344.63,338.32,331.9,349.51,344.17,342.37,350.69,348.51,355.63,354.88,356.27,352.78,351.91,352.45,349.21,342.56,349.08],"MSFT":[498.0,500.59,497.93,516.17,509.22,508.96,512.9,512.8,517.53,525.18,529.3,529.76,522.61,535.07,541.15,543.45,533.69,539.44,529.05,533.52,531.87,532.95,521.08,524.51,532.6,531.33,531.01,530.14,521.91,507.12,520.99,555.8,535.93,530.61,545.18,533.16,521.13,523.0,523.88,517.99,506.24,508.29,498.3,484.52,492.5],"NVDA":[228.87,225.51,224.58,225.07,228.86,227.21,228.38,230.86,233.95,238.9,239.24,237.47,230.48,229.28,226.32,228.52,221.3,217.23,214.13,217.09,216.47,221.97,212.21,210.96,216.0,217.94,215.38,213.66,204.64,202.06,206.69,200.13,181.6,186.64,178.67,168.89,173.73,166.19,162.85,156.14,155.46,150.96,145.98,125.53,165.05],"TSLA":[378.9,380.12,377.94,372.11,357.45,352.84,354.81,354.11,370.59,378.73,380.68,377.81,375.0,382.7,378.03,375.23,367.16,362.44,354.72,368.06,373.71,386.47,374.58,372.22,391.62,407.46,404.22,403.3,399.81,403.82,398.5,385.19,343.69,358.22,378.05,379.78,390.84,397.45,390.22,379.74,380.11,383.72,374.41,345.82,385.46],"SPY":[773.38,767.81,767.18,771.35,765.61,764.2,762.63,763.99,769.64,774.83,779.09,777.22,773.93,778.57,778.1,778.01,769.6,771.79,763.25,766.48,769.05,773.09,763.96,759.97,765.37,769.66,772.31,769.36,755.72,752.1,754.35,766.81,733.0,735.29,752.69,749.92,759.81,757.12,754.37,739.95,732.44,730.2,715.87,689.81,722.29]},"last_asof":"2026-11-23","future":["2026-11-24"],"records":{"AAPL":[{"a":"2026-10-29","p":348.91,"t":"2026-10-30","v":357.15,"lo":346.44,"hi":367.86,"dir":"up","uns":null,"pv":[357.15],"pl":[346.44],"pu":[367.86]},{"a":"2026-10-30","p":344.63,"t":"2026-11-02","v":339.81,"lo":329.62,"hi":350.0,"dir":"down","uns":null,"pv":[339.81],"pl":[329.62],"pu":[350.0]},{"a":"2026-11-02","p":338.32,"t":"2026-11-03","v":331.66,"lo":321.71,"hi":341.61,"dir":"down","uns":null,"pv":[331.66],"pl":[321.71],"pu":[341.61]},{"a":"2026-11-03","p":331.9,"t":"2026-11-04","v":324.3,"lo":314.57,"hi":334.03,"dir":"down","uns":null,"pv":[324.3],"pl":[314.57],"pu":[334.03]},{"a":"2026-11-04","p":349.51,"t":"2026-11-05","v":366.99,"lo":355.98,"hi":378.0,"dir":"up","uns":null,"pv":[366.99],"pl":[355.98],"pu":[378.0]},{"a":"2026-11-05","p":344.17,"t":"2026-11-06","v":335.74,"lo":325.67,"hi":345.81,"dir":"down","uns":null,"pv":[335.74],"pl":[325.67],"pu":[345.81]},{"a":"2026-11-06","p":342.37,"t":"2026-11-09","v":339.8,"lo":329.61,"hi":349.99,"dir":"down","uns":null,"pv":[339.8],"pl":[329.61],"pu":[349.99]},{"a":"2026-11-09","p":350.69,"t":"2026-11-10","v":358.78,"lo":348.02,"hi":369.54,"dir":"up","uns":null,"pv":[358.78],"pl":[348.02],"pu":[369.54]},{"a":"2026-11-10","p":348.51,"t":"2026-11-11","v":347.27,"lo":336.85,"hi":357.69,"dir":"down","uns":null,"pv":[347.27],"pl":[336.85],"pu":[357.69]},{"a":"2026-11-11","p":355.63,"t":"2026-11-12","v":370.11,"lo":359.01,"hi":381.21,"dir":"up","uns":null,"pv":[370.11],"pl":[359.01],"pu":[381.21]},{"a":"2026-11-12","p":354.88,"t":"2026-11-13","v":354.54,"lo":343.9,"hi":365.18,"dir":"down","uns":null,"pv":[354.54],"pl":[343.9],"pu":[365.18]},{"a":"2026-11-13","p":356.27,"t":"2026-11-16","v":357.22,"lo":346.5,"hi":367.94,"dir":"up","uns":null,"pv":[357.22],"pl":[346.5],"pu":[367.94]},{"a":"2026-11-16","p":352.78,"t":"2026-11-17","v":347.93,"lo":337.49,"hi":358.37,"dir":"down","uns":null,"pv":[347.93],"pl":[337.49],"pu":[358.37]},{"a":"2026-11-17","p":351.91,"t":"2026-11-18","v":352.51,"lo":341.93,"hi":363.09,"dir":"up","uns":null,"pv":[352.51],"pl":[341.93],"pu":[363.09]},{"a":"2026-11-18","p":352.45,"t":"2026-11-19","v":355.06,"lo":344.41,"hi":365.71,"dir":"up","uns":null,"pv":[355.06],"pl":[344.41],"pu":[365.71]},{"a":"2026-11-19","p":349.21,"t":"2026-11-20","v":346.25,"lo":335.86,"hi":356.64,"dir":"down","uns":null,"pv":[346.25],"pl":[335.86],"pu":[356.64]},{"a":"2026-11-20","p":342.56,"t":"2026-11-23","v":336.8,"lo":326.7,"hi":346.9,"dir":"down","uns":null,"pv":[336.8],"pl":[326.7],"pu":[346.9]},{"a":"2026-11-23","p":349.08,"t":"2026-11-24","v":354.63,"lo":343.99,"hi":365.27,"dir":"up","uns":null,"pv":[354.63],"pl":[343.99],"pu":[365.27]}],"MSFT":[{"a":"2026-10-29","p":530.14,"t":"2026-10-30","v":532.42,"lo":516.45,"hi":548.39,"dir":"up","uns":null,"pv":[532.42],"pl":[516.45],"pu":[548.39]},{"a":"2026-10-30","p":521.91,"t":"2026-11-02","v":514.54,"lo":499.1,"hi":529.98,"dir":"down","uns":null,"pv":[514.54],"pl":[499.1],"pu":[529.98]},{"a":"2026-11-02","p":507.12,"t":"2026-11-03","v":492.58,"lo":477.8,"hi":507.36,"dir":"down","uns":null,"pv":[492.58],"pl":[477.8],"pu":[507.36]},{"a":"2026-11-03","p":520.99,"t":"2026-11-04","v":536.62,"lo":520.52,"hi":552.72,"dir":"up","uns":null,"pv":[536.62],"pl":[520.52],"pu":[552.72]},{"a":"2026-11-04","p":555.8,"t":"2026-11-05","v":583.59,"lo":566.08,"hi":601.1,"dir":"up","uns":null,"pv":[583.59],"pl":[566.08],"pu":[601.1]},{"a":"2026-11-05","p":535.93,"t":"2026-11-06","v":509.13,"lo":493.86,"hi":524.4,"dir":"down","uns":null,"pv":[509.13],"pl":[493.86],"pu":[524.4]},{"a":"2026-11-06","p":530.61,"t":"2026-11-09","v":516.64,"lo":501.14,"hi":532.14,"dir":"down","uns":null,"pv":[516.64],"pl":[501.14],"pu":[532.14]},{"a":"2026-11-09","p":545.18,"t":"2026-11-10","v":558.37,"lo":541.62,"hi":575.12,"dir":"up","uns":null,"pv":[558.37],"pl":[541.62],"pu":[575.12]},{"a":"2026-11-10","p":533.16,"t":"2026-11-11","v":518.36,"lo":502.81,"hi":533.91,"dir":"down","uns":null,"pv":[518.36],"pl":[502.81],"pu":[533.91]},{"a":"2026-11-11","p":521.12,"t":"2026-11-12","v":514.8,"lo":499.36,"hi":530.24,"dir":"down","uns":"reference_mismatch","pv":[514.8],"pl":[499.36],"pu":[530.24]},{"a":"2026-11-12","p":523.0,"t":"2026-11-13","v":523.83,"lo":508.12,"hi":539.54,"dir":"up","uns":null,"pv":[523.83],"pl":[508.12],"pu":[539.54]},{"a":"2026-11-13","p":523.88,"t":"2026-11-16","v":527.15,"lo":511.34,"hi":542.96,"dir":"up","uns":null,"pv":[527.15],"pl":[511.34],"pu":[542.96]},{"a":"2026-11-16","p":517.99,"t":"2026-11-17","v":508.94,"lo":493.67,"hi":524.21,"dir":"down","uns":null,"pv":[508.94],"pl":[493.67],"pu":[524.21]},{"a":"2026-11-17","p":506.24,"t":"2026-11-18","v":498.23,"lo":483.28,"hi":513.18,"dir":"down","uns":null,"pv":[498.23],"pl":[483.28],"pu":[513.18]},{"a":"2026-11-18","p":508.29,"t":"2026-11-19","v":518.18,"lo":502.63,"hi":533.73,"dir":"up","uns":null,"pv":[518.18],"pl":[502.63],"pu":[533.73]},{"a":"2026-11-19","p":498.3,"t":"2026-11-20","v":493.05,"lo":478.26,"hi":507.84,"dir":"down","uns":null,"pv":[493.05],"pl":[478.26],"pu":[507.84]},{"a":"2026-11-20","p":484.52,"t":"2026-11-23","v":473.65,"lo":459.44,"hi":487.86,"dir":"down","uns":null,"pv":[473.65],"pl":[459.44],"pu":[487.86]},{"a":"2026-11-23","p":492.5,"t":"2026-11-24","v":507.04,"lo":491.83,"hi":522.25,"dir":"up","uns":null,"pv":[507.04],"pl":[491.83],"pu":[522.25]}],"NVDA":[{"a":"2026-10-29","p":213.66,"t":"2026-10-30","v":212.95,"lo":206.56,"hi":219.34,"dir":"down","uns":null,"pv":[212.95],"pl":[206.56],"pu":[219.34]},{"a":"2026-10-30","p":204.64,"t":"2026-11-02","v":195.92,"lo":190.04,"hi":201.8,"dir":"down","uns":null,"pv":[195.92],"pl":[190.04],"pu":[201.8]},{"a":"2026-11-02","p":202.06,"t":"2026-11-03","v":199.46,"lo":193.48,"hi":205.44,"dir":"down","uns":null,"pv":[199.46],"pl":[193.48],"pu":[205.44]},{"a":"2026-11-03","p":206.69,"t":"2026-11-04","v":213.22,"lo":206.82,"hi":219.62,"dir":"up","uns":null,"pv":[213.22],"pl":[206.82],"pu":[219.62]},{"a":"2026-11-04","p":200.13,"t":"2026-11-05","v":191.95,"lo":186.19,"hi":197.71,"dir":"down","uns":null,"pv":[191.95],"pl":[186.19],"pu":[197.71]},{"a":"2026-11-05","p":181.6,"t":"2026-11-06","v":172.52,"lo":167.34,"hi":177.7,"dir":"down","uns":null,"pv":[172.52],"pl":[167.34],"pu":[177.7]},{"a":"2026-11-06","p":186.64,"t":"2026-11-09","v":190.77,"lo":185.05,"hi":196.49,"dir":"up","uns":null,"pv":[190.77],"pl":[185.05],"pu":[196.49]},{"a":"2026-11-09","p":178.67,"t":"2026-11-10","v":170.87,"lo":165.74,"hi":176.0,"dir":"down","uns":null,"pv":[170.87],"pl":[165.74],"pu":[176.0]},{"a":"2026-11-10","p":168.89,"t":"2026-11-11","v":160.45,"lo":155.64,"hi":165.26,"dir":"down","uns":null,"pv":[160.45],"pl":[155.64],"pu":[165.26]},{"a":"2026-11-11","p":173.73,"t":"2026-11-12","v":179.52,"lo":174.13,"hi":184.91,"dir":"up","uns":null,"pv":[179.52],"pl":[174.13],"pu":[184.91]},{"a":"2026-11-12","p":166.19,"t":"2026-11-13","v":159.16,"lo":154.39,"hi":163.93,"dir":"down","uns":null,"pv":[159.16],"pl":[154.39],"pu":[163.93]},{"a":"2026-11-13","p":162.85,"t":"2026-11-16","v":160.25,"lo":155.44,"hi":165.06,"dir":"down","uns":null,"pv":[160.25],"pl":[155.44],"pu":[165.06]},{"a":"2026-11-16","p":156.14,"t":"2026-11-17","v":150.56,"lo":146.04,"hi":155.08,"dir":"down","uns":null,"pv":[150.56],"pl":[146.04],"pu":[155.08]},{"a":"2026-11-17","p":155.46,"t":"2026-11-18","v":154.69,"lo":150.05,"hi":159.33,"dir":"down","uns":null,"pv":[154.69],"pl":[150.05],"pu":[159.33]},{"a":"2026-11-18","p":150.96,"t":"2026-11-19","v":147.32,"lo":142.9,"hi":151.74,"dir":"down","uns":null,"pv":[147.32],"pl":[142.9],"pu":[151.74]},{"a":"2026-11-19","p":145.98,"t":"2026-11-20","v":142.14,"lo":137.88,"hi":146.4,"dir":"down","uns":null,"pv":[142.14],"pl":[137.88],"pu":[146.4]},{"a":"2026-11-20","p":125.53,"t":"2026-11-23","v":119.25,"lo":115.67,"hi":122.83,"dir":"down","uns":null,"pv":[119.25],"pl":[115.67],"pu":[122.83]},{"a":"2026-11-23","p":165.05,"t":"2026-11-24","v":173.3,"lo":168.1,"hi":178.5,"dir":"up","uns":null,"pv":[173.3],"pl":[168.1],"pu":[178.5]}],"TSLA":[{"a":"2026-10-29","p":403.3,"t":"2026-10-30","v":403.76,"lo":391.65,"hi":415.87,"dir":"up","uns":null,"pv":[403.76],"pl":[391.65],"pu":[415.87]},{"a":"2026-10-30","p":399.81,"t":"2026-11-02","v":396.81,"lo":384.91,"hi":408.71,"dir":"down","uns":null,"pv":[396.81],"pl":[384.91],"pu":[408.71]},{"a":"2026-11-02","p":403.82,"t":"2026-11-03","v":403.15,"lo":391.06,"hi":415.24,"dir":"down","uns":null,"pv":[403.15],"pl":[391.06],"pu":[415.24]},{"a":"2026-11-03","p":398.5,"t":"2026-11-04","v":395.95,"lo":384.07,"hi":407.83,"dir":"down","uns":null,"pv":[395.95],"pl":[384.07],"pu":[407.83]},{"a":"2026-11-04","p":385.19,"t":"2026-11-05","v":374.78,"lo":363.54,"hi":386.02,"dir":"down","uns":null,"pv":[374.78],"pl":[363.54],"pu":[386.02]},{"a":"2026-11-05","p":343.69,"t":"2026-11-06","v":326.51,"lo":316.71,"hi":336.31,"dir":"down","uns":null,"pv":[326.51],"pl":[316.71],"pu":[336.31]},{"a":"2026-11-06","p":358.22,"t":"2026-11-09","v":371.55,"lo":360.4,"hi":382.7,"dir":"up","uns":null,"pv":[371.55],"pl":[360.4],"pu":[382.7]},{"a":"2026-11-09","p":378.05,"t":"2026-11-10","v":396.95,"lo":385.04,"hi":408.86,"dir":"up","uns":null,"pv":[396.95],"pl":[385.04],"pu":[408.86]},{"a":"2026-11-10","p":379.78,"t":"2026-11-11","v":378.93,"lo":367.56,"hi":390.3,"dir":"down","uns":null,"pv":[378.93],"pl":[367.56],"pu":[390.3]},{"a":"2026-11-11","p":390.84,"t":"2026-11-12","v":403.62,"lo":391.51,"hi":415.73,"dir":"up","uns":null,"pv":[403.62],"pl":[391.51],"pu":[415.73]},{"a":"2026-11-12","p":397.45,"t":"2026-11-13","v":402.28,"lo":390.21,"hi":414.35,"dir":"up","uns":null,"pv":[402.28],"pl":[390.21],"pu":[414.35]},{"a":"2026-11-13","p":390.22,"t":"2026-11-16","v":384.49,"lo":372.96,"hi":396.02,"dir":"down","uns":null,"pv":[384.49],"pl":[372.96],"pu":[396.02]},{"a":"2026-11-16","p":379.74,"t":"2026-11-17","v":365.51,"lo":354.54,"hi":376.48,"dir":"down","uns":null,"pv":[365.51],"pl":[354.54],"pu":[376.48]},{"a":"2026-11-17","p":380.11,"t":"2026-11-18","v":380.58,"lo":369.16,"hi":392.0,"dir":"up","uns":null,"pv":[380.58],"pl":[369.16],"pu":[392.0]},{"a":"2026-11-18","p":383.72,"t":"2026-11-19","v":388.86,"lo":377.19,"hi":400.53,"dir":"up","uns":null,"pv":[388.86],"pl":[377.19],"pu":[400.53]},{"a":"2026-11-19","p":374.41,"t":"2026-11-20","v":370.64,"lo":359.52,"hi":381.76,"dir":"down","uns":null,"pv":[370.64],"pl":[359.52],"pu":[381.76]},{"a":"2026-11-20","p":345.82,"t":"2026-11-23","v":328.53,"lo":318.67,"hi":338.39,"dir":"down","uns":null,"pv":[328.53],"pl":[318.67],"pu":[338.39]},{"a":"2026-11-23","p":385.46,"t":"2026-11-24","v":404.73,"lo":392.59,"hi":416.87,"dir":"up","uns":null,"pv":[404.73],"pl":[392.59],"pu":[416.87]}],"SPY":[{"a":"2026-10-29","p":769.36,"t":"2026-10-30","v":774.56,"lo":751.32,"hi":797.8,"dir":"up","uns":null,"pv":[774.56],"pl":[751.32],"pu":[797.8]},{"a":"2026-10-30","p":755.72,"t":"2026-11-02","v":741.99,"lo":719.73,"hi":764.25,"dir":"down","uns":null,"pv":[741.99],"pl":[719.73],"pu":[764.25]},{"a":"2026-11-02","p":752.1,"t":"2026-11-03","v":738.89,"lo":716.72,"hi":761.06,"dir":"down","uns":null,"pv":[738.89],"pl":[716.72],"pu":[761.06]},{"a":"2026-11-03","p":754.35,"t":"2026-11-04","v":767.36,"lo":744.34,"hi":790.38,"dir":"up","uns":null,"pv":[767.36],"pl":[744.34],"pu":[790.38]},{"a":"2026-11-04","p":766.81,"t":"2026-11-05","v":786.36,"lo":762.77,"hi":809.95,"dir":"up","uns":null,"pv":[786.36],"pl":[762.77],"pu":[809.95]},{"a":"2026-11-05","p":733.0,"t":"2026-11-06","v":696.35,"lo":675.46,"hi":717.24,"dir":"down","uns":null,"pv":[696.35],"pl":[675.46],"pu":[717.24]},{"a":"2026-11-06","p":735.29,"t":"2026-11-09","v":737.6,"lo":715.47,"hi":759.73,"dir":"up","uns":null,"pv":[737.6],"pl":[715.47],"pu":[759.73]},{"a":"2026-11-09","p":752.69,"t":"2026-11-10","v":768.0,"lo":744.96,"hi":791.04,"dir":"up","uns":null,"pv":[768.0],"pl":[744.96],"pu":[791.04]},{"a":"2026-11-10","p":749.92,"t":"2026-11-11","v":755.77,"lo":733.1,"hi":778.44,"dir":"up","uns":null,"pv":[755.77],"pl":[733.1],"pu":[778.44]},{"a":"2026-11-11","p":759.81,"t":"2026-11-12","v":768.89,"lo":745.82,"hi":791.96,"dir":"up","uns":null,"pv":[768.89],"pl":[745.82],"pu":[791.96]},{"a":"2026-11-12","p":757.12,"t":"2026-11-13","v":761.84,"lo":738.98,"hi":784.7,"dir":"up","uns":null,"pv":[761.84],"pl":[738.98],"pu":[784.7]},{"a":"2026-11-13","p":754.37,"t":"2026-11-16","v":756.95,"lo":734.24,"hi":779.66,"dir":"up","uns":null,"pv":[756.95],"pl":[734.24],"pu":[779.66]},{"a":"2026-11-16","p":739.95,"t":"2026-11-17","v":719.57,"lo":697.98,"hi":741.16,"dir":"down","uns":null,"pv":[719.57],"pl":[697.98],"pu":[741.16]},{"a":"2026-11-17","p":732.44,"t":"2026-11-18","v":719.9,"lo":698.3,"hi":741.5,"dir":"down","uns":null,"pv":[719.9],"pl":[698.3],"pu":[741.5]},{"a":"2026-11-18","p":730.2,"t":"2026-11-19","v":730.84,"lo":708.91,"hi":752.77,"dir":"up","uns":null,"pv":[730.84],"pl":[708.91],"pu":[752.77]},{"a":"2026-11-19","p":715.87,"t":"2026-11-20","v":695.88,"lo":675.0,"hi":716.76,"dir":"down","uns":null,"pv":[695.88],"pl":[675.0],"pu":[716.76]},{"a":"2026-11-20","p":689.81,"t":"2026-11-23","v":657.0,"lo":637.29,"hi":676.71,"dir":"down","uns":null,"pv":[657.0],"pl":[637.29],"pu":[676.71]},{"a":"2026-11-23","p":722.29,"t":"2026-11-24","v":758.4,"lo":735.65,"hi":781.15,"dir":"up","uns":null,"pv":[758.4],"pl":[735.65],"pu":[781.15]}]},"events":[]};
+const NS = 'http://www.w3.org/2000/svg';
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const $ = (s, r) => (r || document).querySelector(s);
+function S(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function H(tag, cls, text, parent) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; }
+const fmt = (x, d) => Number(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const mdy = iso => iso.slice(5, 7) + '/' + iso.slice(8, 10) + '/' + iso.slice(2, 4);
+const dlab = iso => { const p = iso.split('-').map(Number); return MON[p[1]-1] + ' ' + p[2]; };
+const dfull = iso => WD[new Date(iso + 'T00:00:00Z').getUTCDay()] + ' ' + iso;
+const CAL = D.sessions.concat(D.future), nS = D.sessions.length, LASTBAR = D.sessions[nS - 1];
+const idx = d => CAL.indexOf(d);
+const state = Object.freeze({ recs: 18, len: 1, arms: Object.freeze({ A1: false, A2: false }), layers: Object.freeze({ path: false, dot: true }) });
+const ARMS = ['A1', 'A2'];
+const armClass = { A1: 'ka1', A2: 'ka2' };
+const armVar = { A1: 'var(--a1)', A2: 'var(--a2)' };
+const rampCol = t => 'color-mix(in srgb, var(--r1) ' + Math.round(t * 100) + '%, var(--r0))';
+const closeOn = (tk, d) => { const i = D.sessions.indexOf(d); return i >= 0 ? D.close[tk][i] : null; };
+
+function status(e) {
+  if (e.realized == null) return { code: 'open', text: 'target open' };
+  if (e.realized >= e.b80[0] && e.realized <= e.b80[1]) return { code: 'in80', text: 'inside 80%' };
+  if (e.realized >= e.b95[0] && e.realized <= e.b95[1]) return { code: 'in95', text: 'inside 95% only' };
+  return { code: 'out', text: 'outside 95%' };
+}
+D.events.forEach(e => { e.st = status(e); });
+D.tickers.forEach(tk => D.records[tk].slice(-6).forEach(r => {
+  const c = closeOn(tk, r.t);
+  if (c == null) { r.res = { code: 'open', text: 'target open', dtext: '' }; return; }
+  r.real = c;
+  const inr = c >= r.lo && c <= r.hi, hit = c !== r.p && ((r.dir === 'up') === (c > r.p));
+  r.res = { code: inr ? 'in' : 'out', text: inr ? 'inside range' : 'outside range', hit, dtext: hit ? 'direction hit' : 'direction miss' };
+  if (r.uns) r.res = { code: 'uns', text: 'relay outcome unsettled (' + r.uns + ')', dtext: '' };
+}));
+const resText = r => r.res.code === 'open' ? 'target open' : (r.res.dtext ? r.res.text + ', ' + r.res.dtext : r.res.text);
+
+// ---------- tooltip ----------
+const tip = $('#tip');
+function showTip(rows, title, x, y) {
+  tip.textContent = '';
+  H('div', 't', title, tip);
+  rows.forEach(r => {
+    const d = H('div', 'r', null, tip);
+    if (r.k) H('span', 'k ' + r.k, null, d);
+    H('span', null, r.label, d);
+    if (r.value != null) H('b', null, r.value, d);
+  });
+  tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let left = x + 14, top = y + 14;
+  if (left + w > window.innerWidth - 8) left = x - w - 14;
+  if (top + h > window.innerHeight - 8) top = y - h - 14;
+  tip.style.left = Math.max(8, left) + 'px'; tip.style.top = Math.max(8, top) + 'px';
+}
+function hideTip() { tip.hidden = true; }
+
+function niceTicks(lo, hi, cnt) {
+  const raw = (hi - lo) / cnt, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p;
+  const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p, out = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(6));
+  return { ticks: out, step };
+}
+
+// ---------- panels ----------
+function drawPanel(host, tk) {
+  const shown = D.records[tk].slice(-state.recs), L = state.len;
+  const i0 = idx(shown[0].a), iLast = idx(D.last_asof), i1 = iLast + L, slots = i1 - i0 + 1;
+  const W = 380, Ht = 250, ml = 44, mr = 16, mt = 12, mb = 28, pw = W - ml - mr, ph = Ht - mt - mb;
+  const xs = i => ml + (i - i0 + 0.5) / slots * pw;
+  let lo = Infinity, hi = -Infinity; const add = v => { if (v < lo) lo = v; if (v > hi) hi = v; };
+  for (let i = i0; i < nS && i <= i1; i++) add(D.close[tk][i]);
+  shown.forEach(r => { add(r.p); for (let k = 0; k < L; k++) { add(r.pv[k]); add(r.pl[k]); add(r.pu[k]); } });
+  const evs = D.events.filter(e => e.ticker === tk && idx(e.target) >= i0 && idx(e.target) <= i1);
+  evs.forEach(e => { if (state.arms[e.arm]) { add(e.b95[0]); add(e.b95[1]); } });
+  const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+  const nt = niceTicks(lo, hi, 4), ys = v => mt + ph - (v - lo) / (hi - lo) * ph;
+  const svg = S('svg', { class: 'chart', viewBox: '0 0 ' + W + ' ' + Ht, role: 'img', tabindex: '0',
+    'aria-label': tk + ' actual closes and next-session relay forecasts for the last ' + shown.length + ' as-of sessions. Use left and right arrow keys to read values.' }, host);
+  nt.ticks.forEach(t => {
+    S('line', { x1: ml, x2: W - mr, y1: ys(t), y2: ys(t), stroke: 'var(--grid)', 'stroke-width': 1 }, svg);
+    const tx = S('text', { x: ml - 6, y: ys(t) + 3.5, 'text-anchor': 'end' }, svg);
+    tx.textContent = nt.step % 1 === 0 ? fmt(t, 0) : fmt(t, 1);
+  });
+  S('line', { x1: ml, x2: W - mr, y1: mt + ph, y2: mt + ph, stroke: 'var(--axis)', 'stroke-width': 1 }, svg);
+  const ks = Array.from(new Set([0, 1, 2, 3, 4].map(k => Math.round(k * (slots - 1) / 4))));
+  ks.forEach((k, n) => {
+    const tx = S('text', { x: xs(i0 + k), y: Ht - 9, 'text-anchor': n === 0 ? 'start' : n === ks.length - 1 ? 'end' : 'middle' }, svg);
+    if (n === 0) tx.setAttribute('x', ml); if (n === ks.length - 1) tx.setAttribute('x', W - mr + 4);
+    tx.textContent = dlab(CAL[i0 + k]);
+  });
+  S('line', { x1: xs(iLast), x2: xs(iLast), y1: mt, y2: mt + ph, stroke: 'var(--axis)', 'stroke-width': 1, 'stroke-dasharray': '3 4' }, svg);
+  // relay ribbons (-3% to +3% around each path); they follow the Path toggle
+  shown.forEach((r, j) => {
+    if (!state.layers.path) return;
+    const t = shown.length > 1 ? j / (shown.length - 1) : 1, a = idx(r.a);
+    if (L === 1) {
+      const x = xs(a + 1), p = S('rect', { x: x - 5, y: ys(r.pu[0]), width: 10, height: Math.max(2, ys(r.pl[0]) - ys(r.pu[0])), rx: 2, stroke: 'none', 'fill-opacity': 0.2 }, svg);
+      p.style.fill = rampCol(t); return;
+    }
+    let u = '', dn = '';
+    for (let k = 1; k <= L; k++) u += (k > 1 ? 'L' : 'M') + xs(a + k).toFixed(1) + ' ' + ys(r.pu[k - 1]).toFixed(1);
+    for (let k = L; k >= 1; k--) dn += 'L' + xs(a + k).toFixed(1) + ' ' + ys(r.pl[k - 1]).toFixed(1);
+    const p = S('path', { d: u + dn + 'Z', stroke: 'none', 'fill-opacity': 0.15 }, svg); p.style.fill = rampCol(t);
+  });
+  // FGF columns at their target dates
+  evs.forEach(e => {
+    if (!state.arms[e.arm]) return;
+    const i = idx(e.target), cx = xs(i) + (e.arm === 'A1' ? -8 : 8), bw = 8;
+    S('rect', { x: cx - bw / 2, y: ys(e.b95[1]), width: bw, height: Math.max(2, ys(e.b95[0]) - ys(e.b95[1])), rx: 3, fill: armVar[e.arm], 'fill-opacity': 0.26 }, svg);
+    S('rect', { x: cx - bw / 2, y: ys(e.b80[1]), width: bw, height: Math.max(2, ys(e.b80[0]) - ys(e.b80[1])), rx: 3, fill: armVar[e.arm], 'fill-opacity': 0.78 }, svg);
+  });
+  // relay paths and next-session dots
+  shown.forEach((r, j) => {
+    const t = shown.length > 1 ? j / (shown.length - 1) : 1, a = idx(r.a);
+    let d = 'M' + xs(a).toFixed(1) + ' ' + ys(r.p).toFixed(1);
+    for (let k = 1; k <= L; k++) d += 'L' + xs(a + k).toFixed(1) + ' ' + ys(r.pv[k - 1]).toFixed(1);
+    if (state.layers.path) { const w = 1.6 + 1.4 * t, p = S('path', { d, fill: 'none', 'stroke-width': w.toFixed(2), 'stroke-dasharray': '0.1 ' + (w * 1.6 + 2.6).toFixed(2), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg); p.style.stroke = rampCol(t); }
+    if (state.layers.dot) { const c = S('circle', { cx: xs(a + 1), cy: ys(r.pv[0]), r: 3.6, stroke: 'var(--surface)', 'stroke-width': 1.8 }, svg); c.style.fill = rampCol(t); }
+  });
+  // actual closes
+  const last = Math.min(nS - 1, i1);
+  let d = '';
+  for (let i = i0; i <= last; i++) d += (i > i0 ? 'L' : 'M') + xs(i).toFixed(1) + ' ' + ys(D.close[tk][i]).toFixed(1);
+  S('path', { d, fill: 'none', stroke: 'var(--ink)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+  for (let i = i0; i <= last; i++) S('circle', { cx: xs(i), cy: ys(D.close[tk][i]), r: i === last ? 4.5 : 3, fill: 'var(--ink)', stroke: 'var(--surface)', 'stroke-width': 1.6 }, svg);
+  const r13 = shown[shown.length - 1];
+  if (iLast > nS - 1) {
+    S('line', { x1: xs(nS - 1), y1: ys(D.close[tk][nS - 1]), x2: xs(iLast), y2: ys(r13.p), stroke: 'var(--ink2)', 'stroke-width': 1.4, 'stroke-dasharray': '2 3' }, svg);
+    S('circle', { cx: xs(iLast), cy: ys(r13.p), r: 4.5, fill: 'var(--surface)', stroke: 'var(--ink)', 'stroke-width': 1.6 }, svg);
+  }
+  // hover and keyboard
+  const xh = S('line', { y1: mt, y2: mt + ph, stroke: 'var(--muted)', 'stroke-width': 1, visibility: 'hidden' }, svg);
+  const hit = S('rect', { x: ml, y: mt, width: pw, height: ph + mb - 6, fill: 'transparent' }, svg);
+  function show(i, cx, cy) {
+    xh.setAttribute('x1', xs(i)); xh.setAttribute('x2', xs(i)); xh.setAttribute('visibility', 'visible');
+    const date = CAL[i], rows = [], others = [];
+    if (i < nS) rows.push({ k: 'k0', label: 'Close', value: fmt(D.close[tk][i], 2) });
+    else if (date === D.last_asof) rows.push({ label: 'Relay price at 14:00 PT (close not yet in the bars file)', value: fmt(r13.p, 2) });
+    shown.forEach(r => {
+      const k = i - idx(r.a);
+      if (k === 1) { if (state.layers.dot) rows.push({ k: 'krel', label: 'Relay, as of ' + dlab(r.a) + ': ' + fmt(r.v, 2) + ', range ' + fmt(r.lo, 2) + ' to ' + fmt(r.hi, 2),
+        value: resText(r) }); }
+      else if (k > 1 && k <= L && state.layers.path) others.push(r.pv[k - 1]);
+    });
+    if (others.length) rows.push({ label: others.length + ' longer path' + (others.length > 1 ? 's' : '') + ' at this date', value: fmt(Math.min.apply(null, others), 2) + ' to ' + fmt(Math.max.apply(null, others), 2) });
+    evs.forEach(e => {
+      if (!state.arms[e.arm] || idx(e.target) !== i) return;
+      rows.push({ k: armClass[e.arm], label: e.arm + ' 80%: ' + fmt(e.b80[0], 2) + ' to ' + fmt(e.b80[1], 2) });
+      rows.push({ k: armClass[e.arm], label: e.arm + ' 95%: ' + fmt(e.b95[0], 2) + ' to ' + fmt(e.b95[1], 2), value: e.st.text });
+    });
+    const rc = svg.getBoundingClientRect();
+    showTip(rows, dfull(date), cx == null ? rc.left + xs(i) / W * rc.width : cx, cy == null ? rc.top + rc.height * 0.3 : cy);
+  }
+  const near = ev => { const rc = svg.getBoundingClientRect(), px = (ev.clientX - rc.left) / rc.width * W; return i0 + Math.max(0, Math.min(slots - 1, Math.round((px - ml) / pw * slots - 0.5))); };
+  hit.addEventListener('pointermove', ev => show(near(ev), ev.clientX, ev.clientY));
+  hit.addEventListener('pointerleave', () => { xh.setAttribute('visibility', 'hidden'); hideTip(); });
+  let cur = iLast;
+  svg.addEventListener('keydown', ev => {
+    if (ev.key === 'ArrowLeft') cur = Math.max(i0, cur - 1); else if (ev.key === 'ArrowRight') cur = Math.min(i1, cur + 1);
+    else if (ev.key === 'Escape') { xh.setAttribute('visibility', 'hidden'); hideTip(); return; } else return;
+    ev.preventDefault(); show(cur);
+  });
+  svg.addEventListener('focus', () => show(cur));
+  svg.addEventListener('blur', () => { xh.setAttribute('visibility', 'hidden'); hideTip(); });
+}
+
+function marker(arm, parent) {
+  const m = S('svg', { width: 10, height: 10, viewBox: '0 0 10 10', 'aria-hidden': 'true' }, parent);
+  if (arm === 'A1') S('circle', { cx: 5, cy: 5, r: 4, fill: armVar.A1 }, m);
+  else if (arm === 'A2') S('rect', { x: 1.5, y: 1.5, width: 7, height: 7, transform: 'rotate(45 5 5)', fill: armVar.A2 }, m);
+  else { const c = S('circle', { cx: 5, cy: 5, r: 4 }, m); c.style.fill = rampCol(1); }
+}
+
+function renderPanels() {
+  const host = $('#panels'); host.textContent = '';
+  D.tickers.forEach(tk => {
+    const card = H('div', 'card', null, host), ph = H('div', 'ph', null, card);
+    H('h3', null, tk, ph);
+    const recs = D.records[tk], r13 = recs[recs.length - 1];
+    const pr = H('div', 'prices', null, card);
+    (D.last_asof > LASTBAR ? [[LASTBAR, 'Closed', D.close[tk][nS - 1]], [D.last_asof, 'Relay', r13.p]]
+      : [[LASTBAR, 'Closed', D.close[tk][nS - 1]], [CAL[idx(D.last_asof) + 1], 'Relay', r13.v]]).forEach(x => {
+      const row = H('div', 'prow', null, pr);
+      H('span', null, mdy(x[0]), row); H('span', null, '-', row); H('span', null, x[1], row); H('span', null, '$' + fmt(x[2], 2), row);
+    });
+    drawPanel(card, tk);
+  });
+  // Sixth tile is an illustrative locked preview, not a fabricated stock forecast.
+  const preview = H('div', 'card premium-preview', null, host);
+  preview.innerHTML = `
+    <div class="ph"><h3>More stocks &amp; tickers</h3><span class="free-pill">PREMIUM</span></div>
+    <div class="ps">Additional market forecasts</div>
+    <div class="preview-chart">
+      <svg class="preview-visual" viewBox="0 0 380 245" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet">
+        <g stroke="var(--grid)" stroke-width="1">
+          <path d="M42 32H364M42 75H364M42 118H364M42 161H364M42 204H364"/>
+          <path d="M42 25V208M104 25V208M166 25V208M228 25V208M290 25V208M352 25V208"/>
+        </g>
+        <path d="M42 171 L76 151 L108 158 L140 114 L173 123 L207 98 L239 109 L271 71 L305 82 L336 52 L363 63"
+          stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M42 183 L76 174 L108 162 L140 142 L173 133 L207 117 L239 111 L271 96 L305 88 L336 70 L363 55"
+          stroke="var(--s1)" stroke-width="3" stroke-dasharray="4 5" fill="none"/>
+        <path d="M42 191 L76 181 L108 171 L140 150 L173 141 L207 126 L239 120 L271 105 L305 97 L336 78 L363 63
+          L363 48 L336 60 L305 79 L271 87 L239 102 L207 108 L173 123 L140 132 L108 153 L76 165 L42 173Z"
+          fill="var(--s1)" fill-opacity=".15"/>
+        <g fill="var(--ink)"><circle cx="42" cy="171" r="4"/><circle cx="108" cy="158" r="4"/>
+          <circle cx="173" cy="123" r="4"/><circle cx="239" cy="109" r="4"/><circle cx="305" cy="82" r="4"/></g>
+      </svg>
+      <div class="preview-lock">
+        <span class="lock-mark" aria-hidden="true">🔒</span>
+        <strong>Unlock more tickers</strong>
+        <p>Get access to additional stock forecasts and advanced chart features.</p>
+        <a class="premium-link" href="/gemla-finance/pricing" target="_top">Get Access to More Stocks &amp; Tickers</a>
+      </div>
+    </div>
+    `;
+  $('#paths-sub').textContent = 'Closes through ' + LASTBAR + '. Latest forecasts as of ' + D.last_asof + ' target ' + D.future[0] + '. Free view: all 18 as-of records, next-session forecasts only. FGF rehearsal bands and longer relay paths are premium features';
+}
+
+// ---------- legend ----------
+const METHOD = { A1: 'EWMA', A2: 'Yang-Zhang' };
+function renderLegend() {
+  const lg = $('#legend'); lg.textContent = '';
+  let s = H('span', null, null, lg), m = S('svg', { width: 24, height: 10, viewBox: '0 0 24 10', 'aria-hidden': 'true' }, s);
+  S('line', { x1: 2, x2: 22, y1: 5, y2: 5, stroke: 'var(--ink)', 'stroke-width': 2 }, m); S('circle', { cx: 12, cy: 5, r: 3, fill: 'var(--ink)' }, m); H('span', null, 'Actual close', s);
+  s = H('span', null, null, lg); const gm = S('svg', { width: 34, height: 10, viewBox: '0 0 34 10', 'aria-hidden': 'true' }, s); [0, 1, 2, 3, 4].forEach(n => { const g = S('circle', { cx: 3 + n * 7, cy: 5, r: 1.4 + 0.3 * n }, gm); g.style.fill = rampCol(n / 4); }); H('span', null, 'Relay path, older to newer record', s); if (!state.layers.path) s.style.opacity = 0.4;
+  s = H('span', null, null, lg); m = S('svg', { width: 12, height: 12, viewBox: '0 0 12 12', 'aria-hidden': 'true' }, s);
+  const c = S('circle', { cx: 6, cy: 6, r: 3.6, stroke: 'var(--surface)', 'stroke-width': 1.8 }, m); c.style.fill = rampCol(1); H('span', null, 'Relay next-session forecast', s); if (!state.layers.dot) s.style.opacity = 0.4;
+  s = H('span', null, null, lg); m = S('svg', { width: 22, height: 12, viewBox: '0 0 22 12', 'aria-hidden': 'true' }, s);
+  const rb = S('path', { d: 'M1 3 L21 1 L21 11 L1 9 Z', 'fill-opacity': 0.25 }, m); rb.style.fill = rampCol(0.7); H('span', null, 'Relay range, -3% to +3%', s); if (!state.layers.path) s.style.opacity = 0.4;
+  ARMS.forEach(a => {
+    s = H('span', null, null, lg); m = S('svg', { width: 12, height: 18, viewBox: '0 0 12 18', 'aria-hidden': 'true' }, s);
+    S('rect', { x: 2, y: 0, width: 8, height: 18, rx: 3, fill: armVar[a], 'fill-opacity': 0.26 }, m);
+    S('rect', { x: 2, y: 4, width: 8, height: 10, rx: 3, fill: armVar[a], 'fill-opacity': 0.78 }, m);
+    H('span', null, 'FGF ' + a + ' (' + METHOD[a] + ') — Premium', s); s.style.opacity = 0.4;
+  });
+}
+
+// ---------- controls ----------
+function seg(id, opts, key, labels) {
+  const el = $(id); el.textContent = '';
+  opts.forEach((n, i) => {
+    const b = H('button', null, labels ? labels[i] : String(n), el);
+    b.type = 'button';
+    const selected = state[key] === n;
+    b.setAttribute('aria-pressed', String(selected));
+    b.disabled = true;
+    b.title = selected ? 'Free plan: selected and locked' : 'Premium feature — Get Full Access';
+    if (!selected) b.setAttribute('aria-label', b.textContent + ' — premium feature, locked');
+  });
+}
+function renderControls() {
+  seg('#seg-r', [3, 6, 18], 'recs', ['Last 3', 'Last 6', 'All 18']);
+  seg('#seg-l', [1, 5, 10], 'len');
+  ['#arm-A1', '#arm-A2', '#rel-path', '#rel-dot'].forEach(id => {
+    const input = $(id);
+    input.disabled = true;
+    input.closest('label').classList.add('is-locked');
+    input.closest('label').title = 'Free plan: this setting is locked. Get Full Access to unlock advanced settings.';
+  });
+}
+
+renderControls(); renderLegend(); renderPanels();
+})();
+
+</script>
+</body></html>
