@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "https://predilyticsinc.com/images/gemla-finance-og-image.jpeg",
-        width: 1199,
-        height: 961,
+        url: "https://predilyticsinc.com/images/gemla-finance-og-image-v2.png",
+        width: 2048,
+        height: 1075,
         alt: "GEMLA Finance Market Forecast Dashboard",
       },
     ],
