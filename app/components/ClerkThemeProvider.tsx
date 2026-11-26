@@ -31,6 +31,18 @@ export default function ClerkThemeProvider({
       appearance={{
         baseTheme: isDark ? dark : undefined,
       }}
+      localization={{
+        signIn: {
+          start: {
+            title: "Sign in to Predilytics",
+          },
+        },
+        signUp: {
+          start: {
+            title: "Create your Predilytics account",
+          },
+        },
+      }}
     >
       {children}
     </ClerkProvider>

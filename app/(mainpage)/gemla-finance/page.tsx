@@ -1,10 +1,39 @@
 import Link from "next/link";
 import Script from "next/script";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "GEMLA Finance | Predilytics",
   description:
-    "Explore five free GEMLA Finance market forecasts, trajectory charts and historical relay audit results.",
+    "Explore free AI-powered market forecasts, stock price trajectories and historical forecast performance with GEMLA Finance.",
+
+  openGraph: {
+    title: "GEMLA Finance | AI-Powered Market Forecasts",
+    description:
+      "Explore free next-session market forecasts for AAPL, MSFT, NVDA, TSLA and SPY. Compare forecast trajectories against actual market closes and explore historical performance.",
+    url: "https://predilyticsinc.com/gemla-finance",
+    siteName: "Predilytics",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "https://predilyticsinc.com/images/gemla-finance-og-image.jpeg",
+        width: 1199,
+        height: 961,
+        alt: "GEMLA Finance Market Forecast Dashboard",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "GEMLA Finance | AI-Powered Market Forecasts",
+    description:
+      "Explore free market forecasts, price trajectories and historical forecast performance.",
+    images: [
+      "https://predilyticsinc.com/images/gemla-finance-og-image.jpeg",
+    ],
+  },
 };
 
 export default function GemlaFinancePage() {
