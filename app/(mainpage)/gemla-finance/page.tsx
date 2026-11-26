@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     description:
       "Explore free market forecasts, price trajectories and historical forecast performance.",
     images: [
-      "https://predilyticsinc.com/images/gemla-finance-og-image.jpeg",
+      "https://predilyticsinc.com/images/gemla-finance-og-image-v2.png",
     ],
   },
 };
